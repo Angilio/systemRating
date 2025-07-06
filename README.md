@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <p align="center">
   <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Logo_Univ_Antsiranana.png/600px-Logo_Univ_Antsiranana.png" width="200" alt="Université d'Antsiranana Logo">
 </p>
@@ -55,3 +56,6 @@ cp .env.example .env
 php artisan key:generate
 php artisan migrate
 php artisan serve
+=======
+# systemRating
+>>>>>>> 19e740578646262ad422b4ec1ead909759f12472
