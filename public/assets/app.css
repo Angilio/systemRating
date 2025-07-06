@@ -1,0 +1,145 @@
+:root{
+    --black: #333333;
+    --red: #C1272D;
+    --shaded-red: #DF9595;
+    --green: #00751F;
+    --white: #FFFFFF;
+    --twhite: #0541a9;
+    box-sizing: border-box;
+}
+a{
+    text-decoration: none;
+}
+#head{
+    padding: 20px;
+    background-color: var(--twhite);
+    color: var(--white);
+}
+#head img{
+    width: 200px;
+}
+
+#home>div{
+    margin: 20px;
+    border-radius: 20px;
+    padding: 20px;
+    background-color: var(--white);
+}
+
+#carte{
+    display: grid;
+    gap: 20px;
+}
+
+#home div h2{
+    padding-bottom: 20px;
+    border-bottom: solid var(--green) 2px;
+}
+
+#hommeImg{
+    color: var(--white);
+    background: url('/assets/images/UNIVERSITE.jpg') center center / cover no-repeat;
+    height: 450px;
+    margin: 20px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px;
+}
+
+
+
+/* #app{
+    padding: 20px;
+} */
+
+#login{
+    border: solid black 2px;
+    border-radius: 10px;
+    box-shadow: lightslategray;
+    padding: 20px;
+}
+
+/* ul{
+    list-style: none;
+} */
+
+footer{
+   padding: 20px; 
+   background-color: var(--twhite);
+   color: var(--white);
+}
+footer>div:first-of-type{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+footer>div:last-of-type{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    background-color: var(--black);
+}
+footer>div:last-of-type div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+footer>div:last-of-type p{
+    margin: 0;
+    padding: 0;
+}
+
+footer p,footer h2{
+    text-align: center;
+}
+
+footer h2{
+    border-bottom: solid 2px var(--green);
+    padding-bottom: 10px;
+}
+
+footer > div:last-of-type{
+    margin-top: 20px;
+}
+
+footer div div p{
+    margin: 0;
+}
+
+footer div div p:last-of-type{
+    margin-bottom: 0;
+}
+
+#item{
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: solid black 2px;
+    padding: 0;
+}
+
+.card .card-header img{
+    width: 100px;
+}
+
+@media screen and (min-width:768px){
+    #carte{
+        grid-template-columns: repeat(2, 1fr);
+    }  
+
+    footer>div:first-of-type{
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+}
+
+@media screen and (min-width:1024px){
+    #carte{
+        grid-template-columns: repeat(3, 1fr);
+    }  
+}
