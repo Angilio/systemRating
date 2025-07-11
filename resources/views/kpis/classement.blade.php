@@ -17,25 +17,28 @@
 
     <p>Classez les KPI de 1 (le plus important) à 6 (le moins important). Chaque rang doit être unique.</p>
 
-    <form action="{{ route('kpi.classement.store') }}" method="POST">
-        @csrf
+    <div id="login">
+        <h3>Rangement de KPI</h3>
+        <form action="{{ route('kpi.classement.store') }}" method="POST">
+            @csrf
 
-        @foreach ($kpis as $kpi)
-            <div class="form-group mb-3">
-                <label for="rang_{{ $kpi->id }}">{{ $kpi->nom }}</label>
-                <input
-                    type="number"
-                    name="rang[{{ $kpi->id }}]"
-                    id="rang_{{ $kpi->id }}"
-                    class="form-control"
-                    min="1"
-                    max="6"
-                    required
-                >
-            </div>
-        @endforeach
+            @foreach ($kpis as $kpi)
+                <div class="form-group mb-3">
+                    <label for="rang_{{ $kpi->id }}">{{ $kpi->nom }}</label>
+                    <input
+                        type="number"
+                        name="rang[{{ $kpi->id }}]"
+                        id="rang_{{ $kpi->id }}"
+                        class="form-control"
+                        min="1"
+                        max="6"
+                        required
+                    >
+                </div>
+            @endforeach
 
-        <button type="submit" class="btn btn-primary">Valider le classement</button>
-    </form>
+            <button type="submit" class="btn btn-primary">Valider le classement</button>
+        </form>
+    </div>
 </div>
 @endsection

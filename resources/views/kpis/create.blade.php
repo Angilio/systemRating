@@ -22,7 +22,7 @@
                 @csrf
 
                 <div class="form-group mb-3">
-                    <label for="nom">Nom de l’indicateur</label>
+                    <label for="nom">Nom de l'indicateur</label>
                     <input type="text" name="nom" class="form-control" required placeholder="ex : Qualité des cours et pédagogie">
                 </div>
 
