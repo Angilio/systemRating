@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <h3 class="mb-4">Classement des Indicateurs de Performance (KPI)</h3>
 
     @if ($errors->any())

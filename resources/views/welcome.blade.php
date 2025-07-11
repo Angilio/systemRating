@@ -6,8 +6,8 @@
 <div id="home">
     <div id="hommeImg" class="text-center">
         <h1>Évaluez la Qualité de Votre Formation</h1>
-       <p>Bienvenue sur la plateforme officielle de notation des établissements de l'Université d'Antsiranana. Partagez votre expérience, consultez les avis et contribuez à l'amélioration continue de nos services éducatifs.</p>
-       <a href="{{ route('kpi.classement.create') }}" class="btn btn-success">
+        <p>Bienvenue sur la plateforme officielle de notation des établissements de l'Université d'Antsiranana. Partagez votre expérience, consultez les avis et contribuez à l'amélioration continue de nos services éducatifs.</p>
+        <a href="{{ auth()->check() ? route('kpi.classement.create') : route('login') }}" class="btn btn-success">
             Commencer à noter
         </a>
     </div>
@@ -73,9 +73,9 @@
             Chaque critère est évalué sur une échelle de 1 à 5 étoiles, et les utilisateurs peuvent laisser des commentaires détaillés pour partager leur expérience. <br>
             Pour garantir la transparence et la fiabilité des évaluations, notre système vérifie l'authenticité des utilisateurs avant la publication des avis.
         </p>
-        <a href="" class="btn btn-success">
+        <a href="{{ auth()->check() ? route('kpi.classement.create') : route('login') }}" class="btn btn-success">
             Commencer à noter
-       </a>
+        </a>
     </div>
 </div>
 

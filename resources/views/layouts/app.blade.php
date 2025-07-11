@@ -15,7 +15,7 @@
             <div class="bg-light">
                 <div id="head" class="d-flex justify-content-center align-items-center flex-column">
                 <img src="{{asset('/assets/images/Una logo.jpg')}}" alt="">
-                <h2>Plateformes de notation des établissement.</h2>
+                <h2>Plateformes de notation des établissements.</h2>
                 <p>Université d'Antsiranana Madagascar</p>
             </div>
             <header>
