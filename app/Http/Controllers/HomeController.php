@@ -23,22 +23,21 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    // public function index()
-    // {
-    //     return view('home');
-    // }
 
     public function index()
     {
         $annee = now()->year;
-        $userId = auth()->id();
+        $user = auth()->user();
+        $userId = $user->id;
 
+        // 1. Classement personnel des KPI (rang individuel)
         $classements = \App\Models\KpiClassement::with('kpi')
                         ->where('user_id', $userId)
                         ->where('annee', $annee)
                         ->orderByDesc('poids')
                         ->get();
-        
+
+        // 2. Classement global des KPI (moyenne des rangs)
         $moyennes = \App\Models\KpiClassement::select('kpi_id')
             ->selectRaw('AVG(rang) as moyenne_rang')
             ->where('annee', $annee)
@@ -46,23 +45,52 @@ class HomeController extends Controller
             ->with('kpi')
             ->get();
 
-        // Calculer les poids moyens
         $totalScore = $moyennes->sum(function ($item) {
             return 7 - $item->moyenne_rang;
         });
 
-        // Ajouter le poids à chaque KPI
         $moyennes = $moyennes->map(function ($item) use ($totalScore) {
             $score = 7 - $item->moyenne_rang;
             $item->poids_moyen = round(($score / $totalScore) * 100, 2);
             return $item;
-        });
+        })->sortByDesc('poids_moyen')->values();
 
-        // Trier les KPI selon poids (et non moyenne pour éviter ex æquo)
-        $moyennes = $moyennes->sortByDesc('poids_moyen')->values();
+        // 3. Note individuelle de l'étudiant
+        $evaluationController = new \App\Http\Controllers\EvaluationController;
+        $noteEtudiant = $evaluationController->calculerNoteEtudiant($user);
 
-        return view('home', compact('classements', 'moyennes'));
+        // 4. Note de la mention
+        $mention = $user->mention;
+        $noteMention = $evaluationController->calculerNoteMention($mention);
+
+        // 5. Classement des mentions de l’établissement
+        $etablissement = $mention->etablissement;
+        $classementMentions = $etablissement->mentions->map(function ($m) use ($evaluationController) {
+            return [
+                'mention' => $m->name,
+                'note' => $evaluationController->calculerNoteMention($m),
+            ];
+        })->sortByDesc('note');
+
+        // 6. Classement des établissements
+        $etablissements = \App\Models\Etablissement::all();
+        $classementEtablissements = $etablissements->map(function ($e) use ($evaluationController) {
+            return [
+                'etablissement' => $e->name,
+                'note' => $evaluationController->calculerNoteEtablissement($e),
+            ];
+        })->sortByDesc('note');
+
+        return view('home', compact(
+            'classements',
+            'moyennes',
+            'noteEtudiant',
+            'noteMention',
+            'classementMentions',
+            'classementEtablissements'
+        ));
     }
+
 
 
     public function welcome()

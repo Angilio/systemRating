@@ -24,7 +24,7 @@ use Spatie\Permission\Models\Permission;
 
 Route::get('/', [HomeController::class, 'welcome'])->name('home');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
-Auth::routes();
+Auth::routes(['verify' => true]);
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/kpi/classement', [App\Http\Controllers\KpiClassementController::class, 'create'])->name('kpi.classement.create');
@@ -44,6 +44,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/evaluation', [EvaluationController::class, 'index'])->name('evaluation.questions');
     Route::post('/evaluation', [EvaluationController::class, 'store'])->name('evaluation.store');
-
     Route::get('/mention/note', [MentionController::class, 'resultats'])->name('mention.resultats');
 });

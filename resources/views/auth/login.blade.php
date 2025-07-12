@@ -57,7 +57,6 @@
                             </div>
                         </div>
                     </form>
-                    <p class="mt-3"><small>Acun compte? <a href="{{ route('register') }}">{{ __('Create a new one') }}</a></small></p>
                 </div>
             </div>
         </div>

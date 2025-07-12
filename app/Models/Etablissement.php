@@ -17,6 +17,6 @@ class Etablissement extends Model
     ];
 
     public function mentions() {
-         return $this->hasMany(Mention::class);
+         return $this->hasMany(Mention::class, 'etabli_id');
     }
 }

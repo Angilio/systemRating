@@ -12,6 +12,18 @@ class KpiClassementController extends Controller
 
     public function create()
     {
+        $userId = Auth::id();
+        $annee = now()->year;
+
+        $existe = KpiClassement::where('user_id', $userId)
+                                ->where('annee', $annee)
+                                ->exists();
+
+        if ($existe) {
+            // Redirection vers une vue ou afficher un message dans la vue existante
+            return view('kpis.classement', ['dejaClasse' => true]);
+        }
+
         $kpis = Kpi::all();
         return view('kpis.classement', compact('kpis'));
     }

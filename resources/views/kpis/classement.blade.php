@@ -4,21 +4,29 @@
 <div class="container-fluid">
     <h3 class="mb-4">Classement des Indicateurs de Performance (KPI)</h3>
 
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <strong>Erreur !</strong> Veuillez corriger les champs suivants :
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <p>Classez les KPI de 1 (le plus important) à 6 (le moins important). Chaque rang doit être unique.</p>
+    @if (!empty($dejaClasse) && $dejaClasse)
+        <div class="alert alert-info">
+            Vous avez déjà effectué le classement des KPI pour cette année.
+        </div>
+        <a href="{{ route('dashboard') }}" class="btn btn-primary">Aller au tableau de bord</a>
+    @else
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <strong>Erreur !</strong> Veuillez corriger les champs suivants :
+                <ul class="m-0 p-0 list-unstyled">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-    <div id="login">
-        <h3>Rangement de KPI</h3>
+        <p>Classez les KPI de 1 (le plus important) à 6 (le moins important). Chaque rang doit être unique.</p>
+
         <form action="{{ route('kpi.classement.store') }}" method="POST">
             @csrf
 
@@ -39,6 +47,6 @@
 
             <button type="submit" class="btn btn-primary">Valider le classement</button>
         </form>
-    </div>
+    @endif
 </div>
 @endsection

@@ -19,4 +19,9 @@ class Mention extends Model
     public function etablissement() {
          return $this->belongsTo(Etablissement::class, 'Etabli_id');
     }
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
 }
