@@ -13,7 +13,9 @@ class Mention extends Model
         'Libelee',
         'name',
         'description',
-        'Etabli_id'
+        'Etabli_id',
+        'note',
+        'rang'
     ];
 
     public function etablissement() {

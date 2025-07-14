@@ -3,41 +3,31 @@
 namespace App\Http\Controllers;
 
 use App\Models\Etablissement;
+use App\Models\Question;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\EvaluationController;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('auth')->except(['welcome']);
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-
     public function index()
     {
         $annee = now()->year;
         $user = auth()->user();
-        $userId = $user->id;
 
-        // 1. Classement personnel des KPI (rang individuel)
+        // 1. Classement personnel des KPI
         $classements = \App\Models\KpiClassement::with('kpi')
-                        ->where('user_id', $userId)
-                        ->where('annee', $annee)
-                        ->orderByDesc('poids')
-                        ->get();
+            ->where('user_id', $user->id)
+            ->where('annee', $annee)
+            ->orderByDesc('poids')
+            ->get();
 
-        // 2. Classement global des KPI (moyenne des rangs)
+        // 2. Classement global des KPI
         $moyennes = \App\Models\KpiClassement::select('kpi_id')
             ->selectRaw('AVG(rang) as moyenne_rang')
             ->where('annee', $annee)
@@ -45,9 +35,7 @@ class HomeController extends Controller
             ->with('kpi')
             ->get();
 
-        $totalScore = $moyennes->sum(function ($item) {
-            return 7 - $item->moyenne_rang;
-        });
+        $totalScore = $moyennes->sum(fn($item) => 7 - $item->moyenne_rang);
 
         $moyennes = $moyennes->map(function ($item) use ($totalScore) {
             $score = 7 - $item->moyenne_rang;
@@ -55,48 +43,50 @@ class HomeController extends Controller
             return $item;
         })->sortByDesc('poids_moyen')->values();
 
-        // 3. Note individuelle de l'étudiant
-        $evaluationController = new \App\Http\Controllers\EvaluationController;
-        $noteEtudiant = $evaluationController->calculerNoteEtudiant($user);
+        // 3. Note de l’étudiant
+        $noteEtudiant = $user->note ?? 0;
 
-        // 4. Note de la mention
+        // 4. Infos sur la mention
         $mention = $user->mention;
-        $noteMention = $evaluationController->calculerNoteMention($mention);
+        $noteMention = $mention?->note;
+        $nbEtudiantsMention = $mention?->users()->count() ?? 0;
+        $nbEvaluateursMention = $mention
+            ? $mention->users()->whereHas('evaluations', fn($q) => $q->where('annee', $annee))->count()
+            : 0;
 
-        // 5. Classement des mentions de l’établissement
-        $etablissement = $mention->etablissement;
-        $classementMentions = $etablissement->mentions->map(function ($m) use ($evaluationController) {
-            return [
+        // 5. Infos établissement
+        $etablissement = $mention?->etablissement;
+        $noteEtablissement = $etablissement?->note;
+
+        $classementMentions = $etablissement?->mentions()
+            ->orderByDesc('note')
+            ->get()
+            ->map(fn($m) => [
                 'mention' => $m->name,
-                'note' => $evaluationController->calculerNoteMention($m),
-            ];
-        })->sortByDesc('note');
+                'note' => $m->note,
+            ]);
 
-        // 6. Classement des établissements
-        $etablissements = \App\Models\Etablissement::all();
-        $classementEtablissements = $etablissements->map(function ($e) use ($evaluationController) {
-            return [
+        $classementEtablissements = Etablissement::orderByDesc('note')->get()
+            ->map(fn($e) => [
                 'etablissement' => $e->name,
-                'note' => $evaluationController->calculerNoteEtablissement($e),
-            ];
-        })->sortByDesc('note');
+                'note' => $e->note,
+            ]);
 
         return view('home', compact(
             'classements',
             'moyennes',
             'noteEtudiant',
             'noteMention',
+            'noteEtablissement',
+            'nbEvaluateursMention',
+            'nbEtudiantsMention',
             'classementMentions',
             'classementEtablissements'
         ));
     }
 
-
-
     public function welcome()
     {
-        // $user = User::find(2);
-        // $user->assignRole('Admin');
         $etablissements = Etablissement::all();
         return view('welcome', compact('etablissements'));
     }

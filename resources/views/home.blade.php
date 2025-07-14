@@ -2,6 +2,7 @@
 
 @section('content')
 <div class="container">
+
     <h2 class="mt-4 text-primary">Votre classement des KPI</h2>
 
     @if($classements->isEmpty())
@@ -30,8 +31,7 @@
         </div>
     @endif
 
-    <h2 class="mt-5">Classement général (Moyenne des rangs et pourcentage)</h2>
-
+    <h2 class="mt-5">Poids moyen des KPI (tous étudiants)</h2>
     <div class="table-responsive">
         <table class="table table-bordered table-striped text-center align-middle">
             <thead class="table-secondary">
@@ -53,49 +53,62 @@
         </table>
     </div>
 
-
+    {{-- Note individuelle --}}
     @if($noteEtudiant === 0)
-        <div class="alert alert-warning">
+        <div class="alert alert-warning mt-4">
             Vous n'avez pas encore effectué votre évaluation. 
-            <a href="{{ route('evaluation.index') }}" class="btn btn-sm btn-outline-primary">Faire l'évaluation</a>
+            <a href="{{ route('evaluation.questions') }}" class="btn btn-sm btn-outline-primary">Faire l'évaluation</a>
         </div>
     @else
         <div class="alert alert-info mt-4">
-            <h4 class="mb-0">Votre note d'évaluation : <span class="badge bg-success">{{ $noteEtudiant }}/100</span></h4>
+            <h4>Votre note d'évaluation : 
+                <span class="badge bg-success fs-5">{{ $noteEtudiant }}/100</span>
+            </h4>
         </div>
     @endif
-    
 
+    {{-- Note de la mention --}}
     @if($noteMention !== null)
-        <div class="alert alert-warning">
-            Note de votre mention : <strong>{{ $noteMention }}/100</strong>
+        <div class="alert alert-secondary mt-4">
+            <strong>Note de votre mention : </strong>
+            <span class="badge bg-warning text-dark">{{ $noteMention }}/100</span> —
+            {{ $nbEvaluateursMention }} sur {{ $nbEtudiantsMention }} étudiants ont évalué.
         </div>
     @else
-        <div class="alert alert-danger">
-            Vous n'êtes pas encore associé à une mention.
+        <div class="alert alert-danger mt-4">
+            Vous n'êtes pas encore associé à une mention ou aucune évaluation n’a été faite.
         </div>
     @endif
 
-    <h4 class="mt-4 text-success">Classement des Mentions dans votre établissement</h4>
+    {{-- Note de l'établissement --}}
+    @if($noteEtablissement !== null)
+        <div class="alert alert-dark mt-4">
+            <strong>Note de votre établissement : </strong>
+            <span class="badge bg-dark">{{ $noteEtablissement }}/100</span>
+        </div>
+    @endif
+
+    {{-- Classement des mentions --}}
+    <h4 class="mt-5 text-success">Classement des Mentions dans votre établissement</h4>
     <ol class="list-group list-group-numbered">
-        @foreach ($classementMentions as $item)
+        @foreach ($classementMentions ?? [] as $mention)
             <li class="list-group-item d-flex justify-content-between align-items-center">
-                {{ $item['mention'] }}
-                <span class="badge bg-success rounded-pill">{{ $item['note'] }}/100</span>
+                {{ $mention['mention'] }}
+                <span class="badge bg-success rounded-pill">{{ $mention['note'] }}/100</span>
             </li>
         @endforeach
     </ol>
 
-    <h4 class="mt-4 text-danger">Classement des Établissements (basé sur les évaluations)</h4>
+    {{-- Classement des établissements --}}
+    <h4 class="mt-5 text-danger">Classement des Établissements</h4>
     <ol class="list-group list-group-numbered">
-        @foreach ($classementEtablissements as $item)
+        @foreach ($classementEtablissements ?? [] as $etab)
             <li class="list-group-item d-flex justify-content-between align-items-center">
-                {{ $item['etablissement'] }}
-                <span class="badge bg-danger rounded-pill">{{ $item['note'] }}/100</span>
+                {{ $etab['etablissement'] }}
+                <span class="badge bg-danger rounded-pill">{{ $etab['note'] }}/100</span>
             </li>
         @endforeach
     </ol>
 
 </div>
 @endsection
-

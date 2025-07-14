@@ -13,7 +13,9 @@ class Etablissement extends Model
         'Libelee',
         'name',
         'description',
-        'logo'
+        'logo',
+        'note',
+        'rang'
     ];
 
     public function mentions() {
