@@ -7,6 +7,7 @@
             <title>@yield('title', env('APP_NAME'))</title>
             <link rel="stylesheet" href={{asset('assets/normalize.css')}}>
             <link rel="stylesheet" href={{asset('assets/app.css')}}>
+            <script src={{asset('assets/chart.min.js')}}></script>
             <link rel="dns-prefetch" href="//fonts.gstatic.com">
             <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
             @vite(['resources/css/app.css', 'resources/js/app.js'])

@@ -26,6 +26,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'etablissement_id',
         'mention_id',
+        'profil',
         'niveau',
         'note'
     ];
@@ -53,6 +54,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function evaluations()
     {
         return $this->hasMany(Evaluation::class);
+    }
+
+    public function temoignages()
+    {
+        return $this->hasMany(Temoignage::class);
     }
 
     public function mention()

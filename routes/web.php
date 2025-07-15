@@ -4,6 +4,7 @@ use App\Http\Controllers\EtablissementController;
 use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MentionController;
+use App\Http\Controllers\TemoignageController;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -47,3 +48,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/evaluation', [EvaluationController::class, 'store'])->name('evaluation.store');
     Route::get('/mention/note', [MentionController::class, 'resultats'])->name('mention.resultats');
 });
+
+Route::get('/temoignages', [TemoignageController::class, 'index'])->name('temoignages.index');
+Route::post('/temoignages', [TemoignageController::class, 'store'])->middleware('auth')->name('temoignages.store');
