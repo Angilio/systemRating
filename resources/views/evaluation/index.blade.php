@@ -18,7 +18,7 @@
             @endphp
 
             @foreach ($groupes as $kpiId => $questionsKpi)
-                <h4 class="mt-5 fw-bold bg-success text-white text-center p-2">
+                <h4 class="mt-3 fw-bold bg-success text-white text-center p-2 border border-2 rounded">
                     {{ $questionsKpi->first()->kpi->nom }}
                 </h4>
 

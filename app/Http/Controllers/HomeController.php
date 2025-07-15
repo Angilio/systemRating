@@ -12,7 +12,7 @@ class HomeController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth')->except(['welcome']);
+        $this->middleware('auth')->except(['welcome','classement']);
     }
 
     public function index()
@@ -62,13 +62,13 @@ class HomeController extends Controller
             ->orderByDesc('note')
             ->get()
             ->map(fn($m) => [
-                'mention' => $m->name,
+                'mention' => $m->Libelee,
                 'note' => $m->note,
             ]);
 
         $classementEtablissements = Etablissement::orderByDesc('note')->get()
             ->map(fn($e) => [
-                'etablissement' => $e->name,
+                'etablissement' => $e->Libelee,
                 'note' => $e->note,
             ]);
 
@@ -90,4 +90,64 @@ class HomeController extends Controller
         $etablissements = Etablissement::all();
         return view('welcome', compact('etablissements'));
     }
+
+    public function classement()
+    {
+        $etablissements = Etablissement::with('mentions')->get();
+
+        // Couleurs pour les graphiques
+        $colors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#20c997', '#ff6b6b', '#6c757d'];
+
+        // Classement des établissements (y compris ceux sans note)
+        $classementEtablissements = $etablissements->sortByDesc(fn($e) => $e->note ?? 0)
+            ->values()
+            ->map(function ($e, $index) {
+                return [
+                    'id' => $e->id,
+                    'rang' => $index + 1,
+                    'etablissement' => $e->Libelee,
+                    'note' => $e->note,
+                ];
+            });
+
+        // Classement des mentions par établissement
+        $classementParEtablissement = [];
+
+        foreach ($etablissements as $etab) {
+            $mentions = $etab->mentions()->orderByDesc('note')->get();
+
+            $mentionsTableau = [];
+            $labels = [];
+            $scores = [];
+            $afficherGraph = false;
+
+            foreach ($mentions as $index => $mention) {
+                $labels[] = $mention->Libelee;
+                $hasNote = $mention->note !== null;
+                $score = $hasNote ? $mention->note : 1;
+                $scores[] = $score;
+
+                if ($hasNote) {
+                    $afficherGraph = true;
+                }
+
+                $mentionsTableau[] = [
+                    'rang' => $index + 1,
+                    'nom' => $mention->Libelee,
+                    'note' => $hasNote ? $mention->note : null,
+                ];
+            }
+
+            $classementParEtablissement[$etab->Libelee] = [
+                'graph' => $afficherGraph,
+                'labels' => $labels,
+                'scores' => $scores,
+                'tableau' => collect($mentionsTableau),
+            ];
+        }
+
+        return view('classement', compact('classementEtablissements', 'classementParEtablissement', 'colors'));
+    }
+
+
 }
