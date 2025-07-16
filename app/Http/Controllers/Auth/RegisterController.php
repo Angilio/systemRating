@@ -3,107 +3,60 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\Etablissement;
-use App\Providers\RouteServiceProvider;
 use App\Models\User;
-use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use App\Models\Etablissement;  // <-- ajoute cette ligne pour utiliser le modèle Etablissement
+use App\Notifications\CustomVerifyEmail;
 use Illuminate\Http\Request;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Register Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users as well as their
-    | validation and creation. By default this controller uses a trait to
-    | provide this functionality without requiring any additional code.
-    |
-    */
-
-    use RegistersUsers;
-
-    /**
-     * Where to redirect users after registration.
-     *
-     * @var string
-     */
-    protected $redirectTo = RouteServiceProvider::HOME;
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
-        $this->middleware('guest');
-    }
-
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'prenoms' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'etablissement_id' => ['required', 'exists:etablissements,id'],
-            'mention_id' => ['required', 'exists:mentions,id'],
-            'niveau' => ['required', 'in:L1,L2,L3,M1,M2,Sortant'],
-        ]);
-    }
-
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return \App\Models\User
-     */
-    protected function create(array $data)
-    {
-        return User::create([
-            'name' => $data['name'],
-            'prenoms' => $data['prenoms'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'etablissement_id' => $data['etablissement_id'],
-            'mention_id' => $data['mention_id'],
-            'niveau' => $data['niveau'],
-        ]);
+        // Seul un admin peut accéder
+        $this->middleware(['auth', 'is_admin']);
     }
 
     public function showRegistrationForm()
     {
+        // Récupérer tous les établissements pour la vue
         $etablissements = Etablissement::all();
+
         return view('auth.register', compact('etablissements'));
     }
 
     public function register(Request $request)
     {
-        // 1. Valider les données du formulaire
-        $this->validator($request->all())->validate();
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'prenoms' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'etablissement_id' => 'required|exists:etablissements,id',
+            'mention_id' => 'required|exists:mentions,id',
+            'niveau' => 'required|string|max:50',
+        ]);
 
-        // 2. Créer l'utilisateur
-        $user = $this->create($request->all());
+        // Générer un mot de passe aléatoire à 8 chiffres
+        $plainPassword = str_pad(random_int(0, 99999999), 8, '0', STR_PAD_LEFT);
 
-        // 3. Déclencher l'envoi de l'e-mail de vérification
-        event(new Registered($user));
+        // Créer l'utilisateur
+        $user = User::create([
+            'name' => $request->name,
+            'prenoms' => $request->prenoms,
+            'email' => $request->email,
+            'password' => Hash::make($plainPassword),
+            'etablissement_id' => $request->etablissement_id,
+            'mention_id' => $request->mention_id,
+            'niveau' => $request->niveau,
+        ]);
 
-        // 4. Connexion automatique
-        Auth::login($user);
+        // Attacher le mot de passe temporairement pour l’email
+        $user->plain_password = $plainPassword;
 
-        // 5. Redirection
-        return redirect($this->redirectPath());
+        // Envoyer un email personnalisé de vérification
+        $user->notify(new CustomVerifyEmail());
+
+        // Retour vers une page admin avec message
+        return redirect()->back()->with('success', 'Étudiant enregistré. Email de vérification envoyé.');
     }
 }

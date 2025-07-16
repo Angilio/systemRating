@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\EtablissementController;
 use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\HomeController;
@@ -10,22 +11,45 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-
+use Illuminate\Support\Facades\URL;  // <-- ajouté
+use Illuminate\Support\Carbon;       // <-- ajouté
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
 */
 
 Route::get('/', [HomeController::class, 'welcome'])->name('home');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
-Auth::routes(['verify' => true]);
+
+/**
+ * Route de vérification d'email sans besoin d'être connecté (évite erreur 403)
+ */
+Route::get('/email/verify/{id}/{hash}', function ($id, $hash) {
+    $user = User::findOrFail($id);
+
+    // Vérifier la signature de l'URL
+    if (! URL::hasValidSignature(request())) {
+        abort(403);
+    }
+
+    // Vérifier que le hash correspond bien à l'email
+    if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+        abort(403);
+    }
+
+    // Marquer l'email comme vérifié si ce n'est pas déjà fait
+    if (! $user->hasVerifiedEmail()) {
+        $user->markEmailAsVerified();
+    }
+
+    return redirect('/login')->with('success', 'Email vérifié avec succès. Vous pouvez maintenant vous connecter.');
+})->name('verification.verify')->middleware('signed');
+
+// Désactive la vérification intégrée des routes Auth pour éviter conflits
+Auth::routes(['verify' => false]);
+
 Route::get('/classement', [App\Http\Controllers\HomeController::class, 'classement'])->name('classement.public');
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -51,3 +75,8 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/temoignages', [TemoignageController::class, 'index'])->name('temoignages.index');
 Route::post('/temoignages', [TemoignageController::class, 'store'])->middleware('auth')->name('temoignages.store');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/changer-mot-de-passe', [LoginController::class, 'showChangePasswordForm'])->name('password.change');
+    Route::post('/changer-mot-de-passe', [LoginController::class, 'updatePassword'])->name('password.update');
+});

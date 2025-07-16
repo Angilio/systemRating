@@ -21,6 +21,12 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
+                // Si la HOME est /login, on ne redirige pas vers /login si l'utilisateur est déjà connecté
+                if (RouteServiceProvider::HOME === '/login') {
+                    // Rediriger vers une autre page comme /dashboard
+                    return redirect('/home');
+                }
+
                 return redirect(RouteServiceProvider::HOME);
             }
         }
@@ -28,3 +34,4 @@ class RedirectIfAuthenticated
         return $next($request);
     }
 }
+

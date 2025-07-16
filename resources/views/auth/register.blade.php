@@ -2,51 +2,57 @@
 
 @section('content')
 <div class="container">
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <div class="d-flex justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Register') }}</div>
+                <div class="card-header">{{ __('Ajouter un étudiant') }}</div>
+
                 <div class="card-body">
                     <form method="POST" action="{{ route('register') }}">
                         @csrf
+
                         <div class="mb-3">
-                            <label for="name" class="form-label text-md-end">{{ __('Name') }}</label>
-                            <div class="w-100">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}"  autocomplete="name" autofocus>
-                                @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
+                            <label for="name" class="form-label">{{ __('Nom') }}</label>
+                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror"
+                                   name="name" value="{{ old('name') }}" autocomplete="name" autofocus>
+                            @error('name')
+                                <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
+                            @enderror
                         </div>
 
                         <div class="mb-3">
-                            <label for="prenoms" class="form-label text-md-end">{{ __('First name') }}</label>
-                            <div class="w-100">
-                                <input id="prenoms" type="text" class="form-control @error('prenoms') is-invalid @enderror" name="prenoms" value="{{ old('prenoms') }}"  autocomplete="prenoms" autofocus>
-                                @error('prenoms')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
+                            <label for="prenoms" class="form-label">{{ __('Prénoms') }}</label>
+                            <input id="prenoms" type="text" class="form-control @error('prenoms') is-invalid @enderror"
+                                   name="prenoms" value="{{ old('prenoms') }}" autocomplete="prenoms">
+                            @error('prenoms')
+                                <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
+                            @enderror
                         </div>
 
-                        <!-- Établissement -->
-                        <div>
-                            <label for="etablissementSelect" class="form-label text-md-end">{{ __('Etabishement') }}</label>
-                            <select  name="etablissement_id" id="etablissementSelect" class="form-select mb-2" required>
+                        <div class="mb-3">
+                            <label for="etablissementSelect" class="form-label">{{ __('Établissement') }}</label>
+                            <select name="etablissement_id" id="etablissementSelect"
+                                    class="form-select @error('etablissement_id') is-invalid @enderror" required>
                                 <option value="">-- Choisir un établissement --</option>
                                 @foreach ($etablissements as $etab)
                                     <option value="{{ $etab->id }}">{{ $etab->Libelee }}</option>
                                 @endforeach
                             </select>
+                            @error('etablissement_id')
+                                <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
+                            @enderror
                         </div>
 
-                        <div class="form-group">
-                            <label for="niveau">Niveau</label>
-                            <select name="niveau" id="niveau" class="form-control" required>
+                        <div class="mb-3">
+                            <label for="niveau" class="form-label">Niveau</label>
+                            <select name="niveau" id="niveau"
+                                    class="form-select @error('niveau') is-invalid @enderror" required>
                                 <option value="">-- Choisir le niveau --</option>
                                 <option value="L1">L1</option>
                                 <option value="L2">L2</option>
@@ -55,57 +61,40 @@
                                 <option value="M2">M2</option>
                                 <option value="Sortant">Sortant</option>
                             </select>
+                            @error('niveau')
+                                <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
+                            @enderror
                         </div>
 
-                        <!-- Mention -->
-                        <div>
-                            <label for="mentionSelect" class="form-label text-md-end">{{ __('Mention') }}</label>
-                            <select name="mention_id" id="mentionSelect" class="form-select mb-3" required>
+                        <div class="mb-3">
+                            <label for="mentionSelect" class="form-label">{{ __('Mention') }}</label>
+                            <select name="mention_id" id="mentionSelect"
+                                    class="form-select @error('mention_id') is-invalid @enderror" required>
                                 <option value="">-- Choisir une mention --</option>
                             </select>
+                            @error('mention_id')
+                                <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
+                            @enderror
                         </div>
 
                         <div class="mb-3">
-                            <label for="email" class="form-label text-md-end">{{ __('Email Address') }}</label>
-                            <div class="w-100">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}"  autocomplete="email">
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="password" class="form-label text-md-end">{{ __('Password') }}</label>
-                            <div class="w-100">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password"  autocomplete="new-password">
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="password-confirm" class="form-label text-md-end">{{ __('Confirm Password') }}</label>
-                            <div class="w-100">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation"  autocomplete="new-password">
-                            </div>
+                            <label for="email" class="form-label">{{ __('Adresse Email') }}</label>
+                            <input id="email" type="email"
+                                   class="form-control @error('email') is-invalid @enderror"
+                                   name="email" value="{{ old('email') }}" autocomplete="email">
+                            @error('email')
+                                <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
+                            @enderror
                         </div>
 
                         <div class="mb-0">
-                            <div class="">
-                                <button type="submit" class="w-100 btn btn-primary">
-                                    {{ __('Register') }}
-                                </button>
-                            </div>
+                            <button type="submit" class="w-100 btn btn-primary">
+                                {{ __('Enregistrer l\'étudiant') }}
+                            </button>
                         </div>
                     </form>
-                    <p class="mt-3"><small>Déjà un compte? <a href="{{ route('login') }}">{{ __('Login') }}</a></small></p>
+
+                    <p class="mt-3"><small><a href="{{ route('login') }}">{{ __('Retour à la connexion') }}</a></small></p>
                 </div>
             </div>
         </div>
@@ -146,5 +135,3 @@
         });
     });
 </script>
-
-
