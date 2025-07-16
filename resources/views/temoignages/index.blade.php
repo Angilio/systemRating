@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <h1 class="text-center text-primary mb-4">Témoignages & Avis</h1>
 
     @auth
@@ -13,7 +13,9 @@
             <div class="mb-3">
                 <textarea name="contenu" class="form-control" rows="4" placeholder="Votre témoignage" required></textarea>
             </div>
-            <button type="submit" class="btn btn-success">Soumettre</button>
+            <div class="text-center">
+                <button type="submit" class="btn btn-success">Soumettre</button>
+            </div>
         </form>
     @else
         <p class="text-center text-muted">Connectez-vous pour laisser un témoignage.</p>
@@ -21,16 +23,35 @@
 
     <div class="row">
         @foreach ($temoignages as $temoignage)
-            <div class="col-md-6 mb-4">
-                <div class="card h-100">
-                    <div class="card-header bg-primary text-white">
-                        {{ $temoignage->titre }}
-                    </div>
+            <div class="col-12 col-sm-12 col-md-6 col-lg-4 mb-4"> {{-- responsive : 1-1-2-3 --}}
+                <div class="card h-100 shadow-sm">
+                    
+                   {{-- Image utilisateur s’il a une photo de profil --}}
+                    @if($temoignage->user->profil)
+                        <img src="{{ asset('storage/' . $temoignage->user->profil) }}" 
+                            class="card-img-top" 
+                            alt="Photo de {{ $temoignage->user->name }}" 
+                            style="height: 250px; object-fit: cover;">
+                    @else
+                        <div class="card-img-top d-flex justify-content-center align-items-center bg-light" style="height: 250px;">
+                            <i class="bi bi-person-circle" style="font-size: 5rem; color: #6c757d;"></i>
+                        </div>
+                    @endif
+
                     <div class="card-body">
-                        <p class="card-text">{{ $temoignage->contenu }}</p>
+                        <h5 class="card-title text-primary fw-bold">
+                            {{ Str::limit($temoignage->titre, 100) }}
+                        </h5>
+                        <p class="card-text text-muted fst-italic">
+                            {{ Str::limit($temoignage->contenu, 200) }}
+                        </p>
+                        {{-- <a href="{{ route('temoignages.show', $temoignage) }}" class="btn btn-primary btn-sm">Détails</a> --}}
                     </div>
-                    <div class="card-footer text-muted">
-                        Par {{ $temoignage->user->name }} le {{ $temoignage->created_at->format('d/m/Y') }}
+
+                    <div class="card-footer text-muted text-end small">
+                        Par <strong>{{ $temoignage->user->name . ' ' . $temoignage->user->prenoms }}</strong> 
+                        le {{ $temoignage->created_at->format('d/m/Y') }} - {{ $temoignage->user->mention->Libelee ?? 'Mention inconnue' }},
+        {{ $temoignage->user->etablissement->Libelee ?? 'Établissement inconnu' }}
                     </div>
                 </div>
             </div>

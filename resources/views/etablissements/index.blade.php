@@ -22,14 +22,56 @@
                 <div class="mt-2">
                     <a href="{{ route('etablissements.edit', $etablissement) }}" class="btn btn-primary btn-sm">Modifier</a>
 
-                    <form action="{{ route('etablissements.destroy', $etablissement) }}" method="POST" class="d-inline" onsubmit="return confirm('Confirmer la suppression ?')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
-                    </form>
+                    <!-- 🗑️ Bouton qui déclenche le modal -->
+                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#confirmDeleteModal"
+                            data-id="{{ $etablissement->id }}"
+                            data-name="{{ $etablissement->name }}">
+                        Supprimer
+                    </button>
                 </div>
             </div>
         @endforeach
     </div>
 </div>
+
+<!-- ✅ Modal de confirmation -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="deleteEtablissementForm" method="POST">
+        @csrf
+        @method('DELETE')
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmer la suppression</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <p>Voulez-vous vraiment supprimer l’établissement <strong id="etablissementName"></strong> ?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="submit" class="btn btn-danger">Supprimer</button>
+            </div>
+        </div>
+    </form>
+  </div>
+</div>
+@endsection
+
+@section('scripts')
+<script>
+    const confirmDeleteModal = document.getElementById('confirmDeleteModal');
+    confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const etablissementId = button.getAttribute('data-id');
+        const etablissementName = button.getAttribute('data-name');
+
+        const modalBodyName = confirmDeleteModal.querySelector('#etablissementName');
+        modalBodyName.textContent = etablissementName;
+
+        const form = confirmDeleteModal.querySelector('#deleteEtablissementForm');
+        form.action = '/etablissements/' + etablissementId;
+    });
+</script>
 @endsection

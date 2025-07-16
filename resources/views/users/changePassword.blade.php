@@ -2,41 +2,40 @@
 
 @section('content')
 <div class="container">
-    <h3 class="mb-4">Changer le mot de passe</h3>
+    <h2>Changer mon mot de passe</h2>
 
-    @if (session('success'))
+    @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
-    @if (session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
     <form method="POST" action="{{ route('password.update') }}">
         @csrf
 
         <div class="mb-3">
-            <label>Mot de passe actuel</label>
-            <input type="password" name="current_password" class="form-control" required>
+            <label for="current_password" class="form-label">Mot de passe actuel</label>
+            <input id="current_password" type="password" class="form-control @error('current_password') is-invalid @enderror"
+                   name="current_password" required>
             @error('current_password')
-                <span class="text-danger">{{ $message }}</span>
+                <span class="invalid-feedback">{{ $message }}</span>
             @enderror
         </div>
 
         <div class="mb-3">
-            <label>Nouveau mot de passe</label>
-            <input type="password" name="new_password" class="form-control" required>
+            <label for="new_password" class="form-label">Nouveau mot de passe</label>
+            <input id="new_password" type="password" class="form-control @error('new_password') is-invalid @enderror"
+                   name="new_password" required>
             @error('new_password')
-                <span class="text-danger">{{ $message }}</span>
+                <span class="invalid-feedback">{{ $message }}</span>
             @enderror
         </div>
 
         <div class="mb-3">
-            <label>Confirmer le nouveau mot de passe</label>
-            <input type="password" name="new_password_confirmation" class="form-control" required>
+            <label for="new_password_confirmation" class="form-label">Confirmer le nouveau mot de passe</label>
+            <input id="new_password_confirmation" type="password" class="form-control"
+                   name="new_password_confirmation" required>
         </div>
 
-        <button type="submit" class="btn btn-primary">Valider le changement</button>
+        <button type="submit" class="btn btn-primary">Mettre à jour</button>
     </form>
 </div>
 @endsection

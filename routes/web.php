@@ -83,8 +83,3 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/etudiant/espace', [App\Http\Controllers\EtudiantController::class, 'espace'])->name('etudiant.espace');
     Route::post('/etudiant/photo', [App\Http\Controllers\EtudiantController::class, 'uploadPhoto'])->name('etudiant.photo');
 });
-
-
-
-
-
