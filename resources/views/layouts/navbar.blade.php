@@ -27,9 +27,7 @@
         <a class="navbar-brand" href="{{ route('classement.public') }}">
             {{ __('Classement') }}
         </a>
-        <a class="navbar-brand" href="">
-            {{ __('Etudiant') }}
-        </a>
+        
         <a class="navbar-brand" href="{{ route('temoignages.index') }}">
             {{ __('Avis et témoignage') }}
         </a>
@@ -49,19 +47,30 @@
                     @endif
                 @else
                     <li class="nav-item dropdown">
-                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        <a id="navbarDropdown" class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button"
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                            @if(Auth::user()->profil)
+                                <img src="{{ asset('storage/' . Auth::user()->profil) }}" alt="Profil"
+                                    class="rounded-circle me-2" width="30" height="30">
+                            @else
+                                <i class="bi bi-person-circle fs-4 me-2"></i>
+                            @endif
                             {{ Auth::user()->name }}
                         </a>
 
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{{ route('etudiant.espace') }}">
+                                <i class="bi bi-person-circle me-2"></i> {{ __('Espace Etudiant') }}
+                            </a>
+
                             <a class="dropdown-item" href="{{ route('password.change') }}">
-                                🔒 Changer mot de passe
+                                <i class="bi bi-shield-lock me-2"></i>Changer mot de passe
                             </a>
 
                             <a class="dropdown-item" href="{{ route('logout') }}"
-                               onclick="event.preventDefault();
-                                         document.getElementById('logout-form').submit();">
-                                {{ __('Logout') }}
+                            onclick="event.preventDefault();
+                                        document.getElementById('logout-form').submit();">
+                                <i class="bi bi-box-arrow-right me-2"></i> {{ __('Logout') }}
                             </a>
 
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">

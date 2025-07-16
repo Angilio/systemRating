@@ -49,6 +49,8 @@ class RegisterController extends Controller
             'mention_id' => $request->mention_id,
             'niveau' => $request->niveau,
         ]);
+        // Assigner le role Etudiant
+        $user->assignRole('Etudiant');
 
         // Attacher le mot de passe temporairement pour l’email
         $user->plain_password = $plainPassword;
