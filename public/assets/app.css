@@ -4,7 +4,7 @@
     --shaded-red: #DF9595;
     --green: #00751F;
     --white: #FFFFFF;
-    --twhite: #0541a9;
+    --twhite: #062252;
     box-sizing: border-box;
 }
 a{
@@ -13,10 +13,17 @@ a{
 #head{
     padding: 20px;
     background-color: var(--twhite);
-    color: var(--white);
+    color: var(--shaded-red);
 }
 #head img{
     width: 150px;
+    border-radius: 10px;
+}
+
+/* Nava bar dynamique*/
+.navbar .nav-link.active {
+    border-bottom: 3px solid var(--shaded-red); /* Couleur de la bordure */
+    
 }
 
 #home>div{

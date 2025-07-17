@@ -1,12 +1,13 @@
-<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+<nav class="navbar navbar-expand-md navbar-dark bg-dark p-0">
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ url('/') }}">
             {{ config('app.name', 'Laravel') }}
         </a>
+
         @auth
             @if (Auth::user()->hasRole('Admin'))
                 <div class="navbar-brand dropdown position-relative">
-                    <a id="adminDropdownBtn" class="nav-link" href="#" role="button">
+                    <a id="adminDropdownBtn" class="nav-link {{ request()->is('etablissements/create') || request()->is('mentions/create') || request()->is('register') ? 'active' : '' }}" href="#" role="button">
                         {{ __('Admin') }}
                     </a>
 
@@ -19,20 +20,22 @@
                 </div>
             @endif
 
-            <a class="navbar-brand" href="{{ route('dashboard') }}">
+            <a class="navbar-brand nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
                 {{ __('Tableau de bord') }}
             </a>
         @endauth
 
-        <a class="navbar-brand" href="{{ route('classement.public') }}">
+        <a class="navbar-brand nav-link {{ request()->routeIs('classement.public') ? 'active' : '' }}" href="{{ route('classement.public') }}">
             {{ __('Classement') }}
         </a>
-        
-        <a class="navbar-brand" href="{{ route('temoignages.index') }}">
+
+        <a class="navbar-brand nav-link {{ request()->routeIs('temoignages.index') ? 'active' : '' }}" href="{{ route('temoignages.index') }}">
             {{ __('Avis et témoignage') }}
         </a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+            aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -42,13 +45,13 @@
                 @guest
                     @if (Route::has('login'))
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                            <a class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}" href="{{ route('login') }}">{{ __('Login') }}</a>
                         </li>
                     @endif
                 @else
                     <li class="nav-item dropdown">
-                        <a id="navbarDropdown" class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button"
-                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        <a id="navbarDropdown" class="nav-link dropdown-toggle d-flex align-items-center" href="#"
+                            role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                             @if(Auth::user()->profil)
                                 <img src="{{ asset('storage/' . Auth::user()->profil) }}" alt="Profil"
                                     class="rounded-circle me-2" width="30" height="30">
@@ -68,8 +71,7 @@
                             </a>
 
                             <a class="dropdown-item" href="{{ route('logout') }}"
-                            onclick="event.preventDefault();
-                                        document.getElementById('logout-form').submit();">
+                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i class="bi bi-box-arrow-right me-2"></i> {{ __('Logout') }}
                             </a>
 
@@ -83,7 +85,6 @@
         </div>
     </div>
 </nav>
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const btn = document.getElementById('adminDropdownBtn');

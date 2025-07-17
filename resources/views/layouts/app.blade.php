@@ -21,10 +21,13 @@
     </head>
     <body>
         <div class="bg-light">
-            <div id="head" class="d-flex justify-content-center align-items-center flex-column">
-                <img src="{{ asset('/assets/images/Una logo.jpg') }}" alt="">
-                <h2>Plateformes de notation des établissements.</h2>
-                <p>Université d'Antsiranana Madagascar</p>
+            <div id="head" class="d-flex justify-content-center align-items-center flex-column flex-lg-row text-center text-lg-start gap-4 p-4">
+                <img src="{{ asset('/assets/images/Una logo.jpg') }}" alt="Logo UNA" class="img-fluid" style="max-width: 200px;">
+                
+                <div>
+                    <h2 class="mb-2">Plateforme de notation des établissements</h2>
+                    <p class="mb-0">Université d'Antsiranana, Madagascar</p>
+                </div>
             </div>
 
             <header>
