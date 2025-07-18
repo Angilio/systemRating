@@ -34,7 +34,7 @@
                             style="height: 250px; object-fit: cover;">
                     @else
                         <div class="card-img-top d-flex justify-content-center align-items-center bg-light" style="height: 250px;">
-                            <i class="bi bi-person-circle" style="font-size: 5rem; color: #6c757d;"></i>
+                            <i class="bi bi-person-circle fs-4 me-2"></i>
                         </div>
                     @endif
 
