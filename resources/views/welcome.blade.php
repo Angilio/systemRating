@@ -67,11 +67,13 @@
             <li>Infrastructures et ressources disponibles</li>
             <li>Satisfaction des étudiants</li>
             <li>Taux de réussite</li>
-            <li>Organisation et accompagnement</li>
+            <li>Organisations</li>
         </ul>
         <p>
-            Chaque critère est évalué sur une échelle de 1 à 5 étoiles, et les utilisateurs peuvent laisser des commentaires détaillés pour partager leur expérience. <br>
-            Pour garantir la transparence et la fiabilité des évaluations, notre système vérifie l'authenticité des utilisateurs avant la publication des avis.
+            Pour cinq des six indicateurs, à savoir la qualité des cours, la pertinence des programmes, les infrastructures et ressources disponibles, l'organisation, ainsi que la satisfaction des étudiants, les données ont été recueillies à l'aide d'un questionnaire adressé aux étudiants. Selon la nature de chaque question, deux types d'échelles de notation ont été utilisés :
+            La première échelle, allant de 0 à 3, a été utilisée pour les questions évaluant le niveau de satisfaction. <br> 
+            Dans ce cadre, une note de 0 signifie que l'étudiant est très insatisfait ou que l'élément évalué est inexistant. Une note de 1 correspond à une appréciation peu satisfaisante. Une note de 2 indique un niveau de satisfaction jugé correct ou satisfaisant, tandis qu'une note de 3 exprime une satisfaction élevée ou un jugement très favorable. <br>
+            La seconde échelle, allant de 0 à 2, a été réservée aux questions fermées de type binaire ou liées à une opinion générale. Sur cette échelle, une réponse notée 0 signifie une réponse négative ou un désaccord. Une note de 1 traduit une position intermédiaire ou une appréciation mitigée (autrement dit, plus ou moins d'accord). Enfin, une note de 2 indique une réponse positive ou un accord clair avec l'énoncé proposé.
         </p>
         <a href="{{ auth()->check() ? route('kpi.classement.create') : route('login') }}" class="btn btn-success">
             Commencer à noter
