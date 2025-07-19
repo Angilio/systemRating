@@ -20,7 +20,7 @@
             @else
                 <div class="alert alert-info h-100">
                     <h4>Votre note d'évaluation : 
-                        <span class="badge bg-success fs-5">{{ $noteEtudiant }}/100</span>
+                        <span class="badge bg-success fs-5">{{ $noteEtudiant }}/30</span>
                     </h4>
                 </div>
             @endif
@@ -31,12 +31,12 @@
             @if($noteMention !== null)
                 <div class="alert alert-secondary h-100">
                     <strong>Note de votre mention : </strong>
-                    <span class="badge bg-warning text-dark">{{ $noteMention }}/100</span> — 
+                    <span class="badge bg-warning text-dark">{{ $noteMention }}/30</span> — 
                     {{ $nbEvaluateursMention }} sur {{ $nbEtudiantsMention }} étudiants ont évalué.
                 </div>
             @else
                 <div class="alert alert-danger h-100">
-                    Vous n'êtes pas encore associé à une mention ou aucune évaluation n’a été faite.
+                    Vous n'êtes pas encore associé à une mention ou aucune évaluation n'a été faite.
                 </div>
             @endif
         </div>
@@ -46,7 +46,7 @@
             @if($noteEtablissement !== null)
                 <div class="alert alert-dark h-100">
                     <strong>Note de votre établissement : </strong>
-                    <span class="badge bg-dark">{{ $noteEtablissement }}/100</span>
+                    <span class="badge bg-dark">{{ $noteEtablissement }}/30</span>
                 </div>
             @endif
         </div>
@@ -177,7 +177,7 @@
                     <tr>
                         <th>Rang</th>
                         <th>Mention</th>
-                        <th>Note (%)</th>
+                        <th>Note</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -186,7 +186,7 @@
                             <td class="text-center">{{ $index + 1 }}</td>
                             <td>{{ $mention['mention'] }}</td>
                             <td class="text-center">
-                                <span class="badge bg-success">{{ $mention['note'] }}/100</span>
+                                <span class="badge bg-success">{{ $mention['note'] }}/30</span>
                             </td>
                         </tr>
                     @endforeach
@@ -204,7 +204,7 @@
                     <tr>
                         <th>Rang</th>
                         <th>Établissement</th>
-                        <th>Note (%)</th>
+                        <th>Note</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -213,7 +213,7 @@
                             <td class="text-center">{{ $index + 1 }}</td>
                             <td>{{ $etab['etablissement'] }}</td>
                             <td class="text-center">
-                                <span class="badge bg-danger">{{ $etab['note'] }}/100</span>
+                                <span class="badge bg-danger">{{ $etab['note'] }}/30</span>
                             </td>
                         </tr>
                     @endforeach
