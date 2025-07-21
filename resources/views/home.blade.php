@@ -105,7 +105,7 @@
         <div class="col-12 col-lg-6">
             <div class="h-100 d-flex justify-content-center align-items-center">
                 <div>
-                    <h2 class="text-center">Doughnut personnel</h2>
+                    <h2 class="text-center">Diagramme circulaire de KPI personnel</h2>
                     <canvas id="kpiDoughnutPersonnel" style="max-width: 100%; max-height: 300px;"></canvas>
                 </div>
             </div>
@@ -142,7 +142,7 @@
         <div class="col-12 col-lg-6">
             <div class="h-100 d-flex justify-content-center align-items-center">
                 <div>
-                    <h2 class="text-center">Doughnut global</h2>
+                    <h2 class="text-center">Diagramme circulaire de KPI global</h2>
                     <canvas id="kpiDoughnutGlobal" style="max-width: 100%; max-height: 300px;"></canvas>
                 </div>
             </div>
