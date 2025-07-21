@@ -20,6 +20,10 @@ a{
     border-radius: 10px;
 }
 
+.navbar{
+    color: var(--shaded-red) !important;
+}
+
 /* Nava bar dynamique*/
 .navbar .nav-link.active {
     border-bottom: 3px solid var(--shaded-red); /* Couleur de la bordure */

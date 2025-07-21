@@ -5,23 +5,26 @@
     <h1 class="text-center text-primary mb-4">Témoignages & Avis</h1>
 
     @auth
-        <form action="{{ route('temoignages.store') }}" method="POST" class="mb-5">
-            @csrf
-            <div class="mb-3">
-                <input type="text" name="titre" class="form-control" placeholder="Titre du témoignage" required>
-            </div>
-            <div class="mb-3">
-                <textarea name="contenu" class="form-control" rows="4" placeholder="Votre témoignage" required></textarea>
-            </div>
-            <div class="text-center">
-                <button type="submit" class="btn btn-success">Soumettre</button>
-            </div>
-        </form>
+        <div class="border border-success border-2 rounded p-2">
+            <h2>Envoyer un nouvel avis ou témoignage</h2>
+            <form action="{{ route('temoignages.store') }}" method="POST" class="">
+                @csrf
+                <div class="mb-3">
+                    <input type="text" name="titre" class="form-control" placeholder="Titre du témoignage" required>
+                </div>
+                <div class="mb-3">
+                    <textarea name="contenu" class="form-control" rows="4" placeholder="Votre témoignage" required></textarea>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success">Soumettre</button>
+                </div>
+            </form>
+        </div>
     @else
         <p class="text-center text-muted">Connectez-vous pour laisser un témoignage.</p>
     @endauth
 
-    <div class="row">
+    <div class="row mt-2">
         @foreach ($temoignages as $temoignage)
             <div class="col-12 col-sm-12 col-md-6 col-lg-4 mb-4"> {{-- responsive : 1-1-2-3 --}}
                 <div class="card h-100 shadow-sm">
@@ -33,8 +36,8 @@
                             alt="Photo de {{ $temoignage->user->name }}" 
                             style="height: 250px; object-fit: cover;">
                     @else
-                        <div class="card-img-top d-flex justify-content-center align-items-center bg-light" style="height: 250px;">
-                            <i class="bi bi-person-circle"></i>
+                        <div class="card-img-top d-flex justify-content-center align-items-center bg-light fs-1" style="height: 250px;">
+                            <i class="bi bi-person-circle text-muted" style="font-size: 80px;"></i>
                         </div>
                     @endif
 
