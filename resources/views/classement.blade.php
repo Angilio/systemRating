@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h1 class="text-center text-primary border border-2 rounded p-2">Classement des Établissements</h1>
+    <h1 class="text-center text-primary border border-2 rounded p-2">Classement des établissements</h1>
 
     {{-- Établissements --}}
     <div class="table-responsive mt-4">
@@ -34,7 +34,7 @@
 
     {{-- Mentions par établissement --}}
     <hr class="my-5">
-    <h1 class="text-center text-primary border border-2 rounded p-2">Classement des Mentions par Établissement</h1>
+    <h1 class="text-center text-primary border border-2 rounded p-2">Classement des mentions par établissement</h1>
 
     @foreach ($classementParEtablissement as $etabName => $data)
         <h3 class="text-success mt-5">{{ $etabName }}</h3>
