@@ -3,66 +3,58 @@
 @section('content')
 <div class="container-fluid">
 
-    {{-- Titre principal --}}
-    <h1 class="text-primary text-center border border-2 rounded" style="border-radius: 5px;">
-        Les notes
+    {{-- TITRE PRINCIPAL --}}
+    <h1 class="text-primary text-center border border-2 rounded my-3">
+        Notes et Classements
     </h1>
 
-    {{-- Trois blocs de note --}}
-    <div class="row mt-2 g-3">
+    {{-- BLOCS DE NOTES --}}
+    <div class="row g-3">
         {{-- Note individuelle --}}
         <div class="col-12 col-lg-4">
-            @if($noteEtudiant === 0)
-                <div class="alert alert-warning h-100">
+            <div class="alert {{ $noteEtudiant === 0 ? 'alert-warning' : 'alert-info' }} h-100">
+                @if($noteEtudiant === 0)
                     Vous n'avez pas encore effectué votre évaluation. 
                     <a href="{{ route('kpi.classement.create') }}" class="btn btn-sm btn-outline-primary mt-2">Faire l'évaluation</a>
-                </div>
-            @else
-                <div class="alert alert-info h-100">
+                @else
                     <h4>Votre note d'évaluation : 
                         <span class="badge bg-success fs-5">{{ $noteEtudiant }}/30</span>
                     </h4>
-                </div>
-            @endif
+                @endif
+            </div>
         </div>
 
         {{-- Note de la mention --}}
         <div class="col-12 col-lg-4">
-            @if($noteMention !== null)
-                <div class="alert alert-secondary h-100">
-                    <strong>Note de votre mention : </strong>
+            <div class="alert {{ $noteMention !== null ? 'alert-secondary' : 'alert-danger' }} h-100">
+                @if($noteMention !== null)
+                    <strong>Note de votre mention :</strong>
                     <span class="badge bg-warning text-dark">{{ $noteMention }}/30</span> — 
                     {{ $nbEvaluateursMention }} sur {{ $nbEtudiantsMention }} étudiants ont évalué.
-                </div>
-            @else
-                <div class="alert alert-danger h-100">
+                @else
                     Vous n'êtes pas encore associé à une mention ou aucune évaluation n'a été faite.
-                </div>
-            @endif
+                @endif
+            </div>
         </div>
 
-        {{-- Note de l'établissement --}}
+        {{-- Note établissement --}}
         <div class="col-12 col-lg-4">
             @if($noteEtablissement !== null)
                 <div class="alert alert-dark h-100">
-                    <strong>Note de votre établissement : </strong>
+                    <strong>Note de votre établissement :</strong>
                     <span class="badge bg-dark">{{ $noteEtablissement }}/30</span>
                 </div>
             @endif
         </div>
     </div>
 
-    {{-- TITRE --}}
-    <h1 class="text-primary text-center border border-2 rounded mt-3" style="border-radius: 5px;">
-        Classement des KPI
-    </h1>
+    {{-- CLASSEMENT DES KPI --}}
+    <h2 class="text-primary text-center border border-2 rounded mt-4">Classement des KPI</h2>
 
-    {{-- LOGIQUE COULEUR UNIQUE --}}
     @php
         $labelsPerso = $classements->pluck('kpi.nom')->toArray();
         $labelsGlobal = $moyennes->pluck('kpi.nom')->toArray();
         $allKpis = array_values(array_unique(array_merge($labelsPerso, $labelsGlobal)));
-
         $baseColors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#20c997', '#17a2b8', '#e83e8c', '#6610f2', '#fd7e14'];
         $kpiColorMap = [];
         foreach ($allKpis as $index => $kpiName) {
@@ -70,151 +62,119 @@
         }
     @endphp
 
-    {{-- Bloc KPI Personnel --}}
-    <div class="row g-4 mt-4 align-items-stretch">
-        <div class="col-12 col-lg-6">
-            <div class="h-100 d-flex flex-column">
-                <h2>Votre classement des KPI</h2>
-                @if($classements->isEmpty())
-                    <p>Vous n'avez pas encore classé vos KPI pour cette année.</p>
-                    <a href="{{ route('kpi.classement.create') }}" class="btn btn-primary">Faire le classement</a>
-                @else
-                    <div class="table-responsive flex-grow-1">
-                        <table class="table table-bordered h-100">
-                            <thead>
-                                <tr>
-                                    <th>KPI</th>
-                                    <th>Rang</th>
-                                    <th>Poids (%)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($classements as $classement)
-                                    <tr>
-                                        <td>{{ $classement->kpi->nom }}</td>
-                                        <td>{{ $classement->rang }}</td>
-                                        <td>{{ $classement->poids }} %</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @endif
-            </div>
-        </div>
-        <div class="col-12 col-lg-6">
-            <div class="h-100 d-flex justify-content-center align-items-center">
-                <div>
-                    <h2 class="text-center">Diagramme circulaire de KPI personnel</h2>
-                    <canvas id="kpiDoughnutPersonnel" style="max-width: 100%; max-height: 300px;"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- Bloc KPI Global --}}
-    <div class="row g-4 mt-4 align-items-stretch">
-        <div class="col-12 col-lg-6">
-            <div class="h-100 d-flex flex-column">
-                <h2>Poids moyen des KPI (tous étudiants)</h2>
+    {{-- KPI PERSONNEL --}}
+    <div class="row mt-3">
+        <h4 class="text-center">Votre classement des KPI</h4>
+        <div class="col-12 col-lg-6 d-flex flex-column">
+            @if($classements->isEmpty())
+                <p>Vous n'avez pas encore classé vos KPI.</p>
+                <a href="{{ route('kpi.classement.create') }}" class="btn btn-primary">Faire le classement</a>
+            @else
                 <div class="table-responsive flex-grow-1">
-                    <table class="table table-bordered table-striped text-center align-middle h-100">
-                        <thead class="table-secondary">
+                    <table class="table table-bordered text-center mb-0">
+                        <thead class="table-light">
                             <tr>
-                                <th>Rang</th>
                                 <th>KPI</th>
-                                <th>Poids moyen (%)</th>
+                                <th>Rang</th>
+                                <th>Poids (%)</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($moyennes as $index => $moyenne)
+                            @foreach ($classements as $c)
                                 <tr>
-                                    <td>{{ $index + 1 }}</td>
-                                    <td>{{ $moyenne->kpi->nom }}</td>
-                                    <td>{{ number_format($moyenne->poids_moyen, 2) }} %</td>
+                                    <td>{{ $c->kpi->nom }}</td>
+                                    <td>{{ $c->rang }}</td>
+                                    <td>{{ $c->poids }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
+            @endif
+        </div>
+        <div class="col-12 col-lg-6 d-flex justify-content-center align-items-center">
+            <canvas id="kpiDoughnutPersonnel" style="max-height: 300px; width: 100%; max-width: 400px;"></canvas>
+        </div>
+    </div>
+
+    {{-- KPI GLOBAL --}}
+    <div class="row mt-4">
+        <h4 class="text-center">Poids moyen des KPI (tous étudiants)</h4>
+        <div class="col-12 col-lg-6 d-flex flex-column">
+            <div class="table-responsive flex-grow-1">
+                <table class="table table-bordered table-striped text-center mb-0">
+                    <thead class="table-secondary">
+                        <tr>
+                            <th>Rang</th>
+                            <th>KPI</th>
+                            <th>Poids moyen (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($moyennes as $index => $m)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>{{ $m->kpi->nom }}</td>
+                                <td>{{ number_format($m->poids_moyen, 2) }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
-        <div class="col-12 col-lg-6">
-            <div class="h-100 d-flex justify-content-center align-items-center">
-                <div>
-                    <h2 class="text-center">Diagramme circulaire de KPI global</h2>
-                    <canvas id="kpiDoughnutGlobal" style="max-width: 100%; max-height: 300px;"></canvas>
-                </div>
-            </div>
+        <div class="col-12 col-lg-6 d-flex justify-content-center align-items-center">
+            <canvas id="kpiDoughnutGlobal" style="max-height: 300px; width: 100%; max-width: 400px;"></canvas>
         </div>
     </div>
 
     {{-- Légende des couleurs --}}
     <div class="mt-4">
-        <h5 class="mt-3">Légende des couleurs :</h5>
+        <h5>Légende des couleurs :</h5>
         <ul class="list-inline">
             @foreach ($kpiColorMap as $kpi => $color)
-                <li class="list-inline-item me-4 mb-2">
-                    <span class="badge" style="background-color: {{ $color }};">&nbsp;&nbsp;&nbsp;</span>
+                <li class="list-inline-item me-3">
+                    <span class="badge" style="background-color: {{ $color }};">&nbsp;&nbsp;</span>
                     {{ $kpi }}
                 </li>
             @endforeach
         </ul>
     </div>
 
-    {{-- Bloc Classement mentions & établissements --}}
-<h1 class="text-primary text-center border border-2 rounded mt-3" style="border-radius: 5px;">
-    Classement des mentions et des établissements
-</h1>
-<div class="row g-4 mt-2">
-
-    {{-- Tableau des Mentions --}}
-    <div class="col-12 col-lg-6">
-        <h4 class="text-success">Classement des Mentions dans votre établissement</h4>
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped align-middle">
-                <thead class="table-success text-center">
-                    <tr>
-                        <th>Rang</th>
-                        <th>Mention</th>
-                        <th>Note</th>
-                    </tr>
+    {{-- CLASSEMENT MENTIONS & ÉTABLISSEMENTS --}}
+    <h2 class="text-primary text-center border border-2 rounded mt-5">Classements globaux</h2>
+    <div class="row g-4 mt-2">
+        {{-- Mentions --}}
+        <div class="col-12 col-lg-6">
+            <h4 class="text-success">Mentions de votre établissement</h4>
+            <table class="table table-bordered table-striped text-center">
+                <thead class="table-success">
+                    <tr><th>Rang</th><th>Mention</th><th>Note</th></tr>
                 </thead>
                 <tbody>
                     @foreach ($classementMentions ?? [] as $index => $mention)
                         <tr>
-                            <td class="text-center">{{ $index + 1 }}</td>
+                            <td>{{ $index + 1 }}</td>
                             <td>{{ $mention['mention'] }}</td>
-                            <td class="text-center">
-                                <span class="badge bg-success">{{ $mention['note'] }}/30</span>
-                            </td>
+                            <td><span class="badge bg-success">{{ $mention['note'] }}/30</span></td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
-    </div>
 
-    {{-- Tableau des Établissements --}}
-    <div class="col-12 col-lg-6">
-        <h4 class="text-danger">Classement des Établissements</h4>
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped align-middle">
-                <thead class="table-danger text-center">
-                    <tr>
-                        <th>Rang</th>
-                        <th>Établissement</th>
-                        <th>Note</th>
-                    </tr>
+        {{-- Établissements --}}
+        <div class="col-12 col-lg-6">
+            <h4 class="text-danger">Établissements</h4>
+            <table class="table table-bordered table-striped text-center">
+                <thead class="table-danger">
+                    <tr><th>Rang</th><th>Établissement</th><th>Note</th></tr>
                 </thead>
                 <tbody>
                     @foreach ($classementEtablissements ?? [] as $index => $etab)
                         <tr>
-                            <td class="text-center">{{ $index + 1 }}</td>
+                            <td>{{ $index + 1 }}</td>
                             <td>{{ $etab['etablissement'] }}</td>
-                            <td class="text-center">
-                                <span class="badge bg-danger">{{ $etab['note'] }}/30</span>
-                            </td>
+                            <td><span class="badge bg-danger">{{ $etab['note'] }}/30</span></td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -224,30 +184,19 @@
 
 </div>
 
-
-</div>
-
-{{-- Scripts --}}
-{{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
+{{-- CHART.JS --}}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const kpiColorMap = @json($kpiColorMap);
-
         const labelsPerso = @json($classements->pluck('kpi.nom'));
         const dataPerso = @json($classements->pluck('poids'));
-        const colorsPerso = labelsPerso.map(label => kpiColorMap[label]);
-
         const labelsGlobal = @json($moyennes->pluck('kpi.nom'));
         const dataGlobal = @json($moyennes->pluck('poids_moyen'));
-        const colorsGlobal = labelsGlobal.map(label => kpiColorMap[label]);
 
         const commonOptions = {
-            cutout: '80%',
+            cutout: '75%',
             responsive: true,
-            plugins: {
-                legend: { display: false },
-                title: { display: false }
-            }
+            plugins: { legend: { display: false } }
         };
 
         new Chart(document.getElementById('kpiDoughnutPersonnel'), {
@@ -256,7 +205,7 @@
                 labels: labelsPerso,
                 datasets: [{
                     data: dataPerso,
-                    backgroundColor: colorsPerso
+                    backgroundColor: labelsPerso.map(label => kpiColorMap[label])
                 }]
             },
             options: commonOptions
@@ -268,7 +217,7 @@
                 labels: labelsGlobal,
                 datasets: [{
                     data: dataGlobal,
-                    backgroundColor: colorsGlobal
+                    backgroundColor: labelsGlobal.map(label => kpiColorMap[label])
                 }]
             },
             options: commonOptions

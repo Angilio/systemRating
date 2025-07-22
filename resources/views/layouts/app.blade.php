@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <link rel="icon" href="{{ asset('/assets/images/Una logo.jpg') }}" type="image/x-icon">
 
         <title>@yield('title', env('APP_NAME'))</title>
 
@@ -22,12 +23,12 @@
     </head>
     <body>
         <div class="bg-light">
-            <div id="head" class="d-flex justify-content-center align-items-center flex-column flex-lg-row text-center text-lg-start gap-4 p-4">
-                <img src="{{ asset('/assets/images/Una logo.jpg') }}" alt="Logo UNA" class="img-fluid" style="max-width: 200px;">
-                
-                <div>
-                    <h2 class="mb-2">Plateforme de notation des établissements</h2>
-                    <p class="mb-0">Université d'Antsiranana, Madagascar</p>
+            <div id="head" class="d-flex justify-content-start align-items-center flex-column flex-lg-row text-center text-lg-start gap-4 py-2 ps-2">
+                <img src="{{ asset('/assets/images/Una logo.jpg') }}" alt="Logo UNA" class="img-fluid" style="max-width: 100px;">
+
+                <div class="d-flex justify-content-center align-items-center flex-column mx-auto">
+                    <h2 class="mb-2 text-white">Plateforme de notation des établissements</h2>
+                    <p class="mb-0 text-white text-center">Université d'Antsiranana, Madagascar</p>
                 </div>
             </div>
 
@@ -49,7 +50,7 @@
                         <p>Université d'Antsiranana</p>
                         <p>BP 0 - Antsiranana 201</p>
                         <p>Madagascar</p>
-                        <p>Email: contact@univ-antsiranana.mg</p>
+                        <p>Email:u**********@gmail.com</p>
                     </div>
                     <div>
                         <h2>Liens Rapides</h2>
@@ -65,7 +66,7 @@
                         <p>Mentions légales</p>
                     </div>
                 </div>
-                <div>
+                <div class="bg-success">
                     <p>&copy; Copyright {{ date('Y') }} - Université d'Antsiranana</p>
                 </div>
             </footer>

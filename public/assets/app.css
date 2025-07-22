@@ -11,13 +11,17 @@ a{
     text-decoration: none;
 }
 #head{
-    padding: 20px;
+    padding: 5px;
     background-color: var(--twhite);
     color: var(--shaded-red);
 }
 #head img{
-    width: 150px;
+    width: 120px;
     border-radius: 10px;
+}
+
+.paragraphe{
+    text-align: justify;
 }
 
 .navbar{
@@ -99,7 +103,7 @@ footer>div:last-of-type{
     justify-content: center;
     align-items: center;
     height: 30px;
-    background-color: var(--black);
+    border-radius: 5px;
 }
 footer>div:last-of-type div{
     display: flex;
