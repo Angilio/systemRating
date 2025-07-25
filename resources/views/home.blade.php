@@ -18,7 +18,7 @@
                     <a href="{{ route('kpi.classement.create') }}" class="btn btn-sm btn-outline-primary mt-2">Faire l'évaluation</a>
                 @else
                     <h4>Votre note d'évaluation : 
-                        <span class="badge bg-success fs-5">{{ $noteEtudiant }}/30</span>
+                        <span class="badge bg-success fs-5">{{ $noteEtudiant }}/100</span>
                     </h4>
                 @endif
             </div>
@@ -29,7 +29,7 @@
             <div class="alert {{ $noteMention !== null ? 'alert-secondary' : 'alert-danger' }} h-100">
                 @if($noteMention !== null)
                     <strong>Note de votre mention :</strong>
-                    <span class="badge bg-warning text-dark">{{ $noteMention }}/30</span> — 
+                    <span class="badge bg-warning text-dark">{{ $noteMention }}/100</span> — 
                     {{ $nbEvaluateursMention }} sur {{ $nbEtudiantsMention }} étudiants ont évalué.
                 @else
                     Vous n'êtes pas encore associé à une mention ou aucune évaluation n'a été faite.
@@ -42,7 +42,7 @@
             @if($noteEtablissement !== null)
                 <div class="alert alert-dark h-100">
                     <strong>Note de votre établissement :</strong>
-                    <span class="badge bg-dark">{{ $noteEtablissement }}/30</span>
+                    <span class="badge bg-dark">{{ $noteEtablissement }}/100</span>
                 </div>
             @endif
         </div>
@@ -155,7 +155,7 @@
                         <tr>
                             <td>{{ $index + 1 }}</td>
                             <td>{{ $mention['mention'] }}</td>
-                            <td><span class="badge bg-success">{{ $mention['note'] }}/30</span></td>
+                            <td><span class="badge bg-success">{{ $mention['note'] }}/100</span></td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -174,7 +174,7 @@
                         <tr>
                             <td>{{ $index + 1 }}</td>
                             <td>{{ $etab['etablissement'] }}</td>
-                            <td><span class="badge bg-danger">{{ $etab['note'] }}/30</span></td>
+                            <td><span class="badge bg-danger">{{ $etab['note'] }}/100</span></td>
                         </tr>
                     @endforeach
                 </tbody>

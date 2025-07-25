@@ -85,59 +85,100 @@ class EvaluationController extends Controller
     }
 
 
+    // public function calculerNoteEtudiant(User $etudiant): float
+    // {
+    //     $annee = now()->year;
+
+    //     $evaluations = Evaluation::with('question.kpi')
+    //         ->where('user_id', $etudiant->id)
+    //         ->where('annee', $annee)
+    //         ->get();
+
+    //     // Groupe par KPI
+    //     $groupes = $evaluations->groupBy(fn($eval) => $eval->question->kpi_id);
+    //     $noteTotale = 0;
+
+    //     foreach ($groupes as $kpiId => $group) {
+    //         $scoreBrut = $group->sum('score');
+
+    //         // Poids moyen dynamique du KPI
+    //         $poids = KpiClassement::where('kpi_id', $kpiId)
+    //                     ->whereNotNull('user_id')
+    //                     ->where('annee', $annee)
+    //                     ->avg('poids');
+
+    //         if ($poids !== null) {
+    //             $noteTotale += ($scoreBrut * ($poids / 100));
+    //         }
+    //     }
+
+    //     // ✅ Calcul du score total maximum possible
+    //     $noteMax = \App\Models\Question::with('options')
+    //         ->get()
+    //         ->sum(fn($q) => $q->options->max('score'));
+
+    //     return $noteMax > 0 ? round(($noteTotale / $noteMax) * 100, 2) : 0;
+    // }
+
+    // public function calculerNoteMention(Mention $mention): array
+    // {
+    //     $etudiants = $mention->users;
+    //     $notes = [];
+
+    //     foreach ($etudiants as $etudiant) {
+    //         if ($etudiant->evaluations()->exists()) {
+    //             $notes[] = $this->calculerNoteEtudiant($etudiant);
+    //         }
+    //     }
+
+    //     $note = count($notes) > 0 ? round(array_sum($notes) / count($notes), 2) : null;
+
+    //     return [
+    //         'note' => $note,
+    //         'nbEvaluateurs' => count($notes),
+    //         'nbTotal' => $etudiants->count(),
+    //     ];
+    // }
+
     public function calculerNoteEtudiant(User $etudiant): float
     {
         $annee = now()->year;
 
+        // Récupérer toutes les évaluations de l'étudiant pour l'année
         $evaluations = Evaluation::with('question.kpi')
             ->where('user_id', $etudiant->id)
             ->where('annee', $annee)
             ->get();
 
-        // Groupe par KPI
+        // Grouper les évaluations par KPI
         $groupes = $evaluations->groupBy(fn($eval) => $eval->question->kpi_id);
-        $noteTotale = 0;
+        $noteFinale = 0;
 
         foreach ($groupes as $kpiId => $group) {
-            $scoreBrut = $group->sum('score');
+            // Somme des scores obtenus par l'étudiant pour ce KPI
+            $scoreObtenu = $group->sum('score');
 
-            // Poids moyen dynamique du KPI
+            // Somme des scores max possibles (barrème) pour ce KPI
+            $scoreMax = $group->sum(fn($eval) => $eval->question->options->max('score'));
+
+            // Si le KPI n’a pas de barème, on ignore pour éviter une division par 0
+            if ($scoreMax == 0) continue;
+
+            // Poids global du KPI (moyenne des poids des étudiants pour ce KPI)
             $poids = KpiClassement::where('kpi_id', $kpiId)
-                        ->whereNotNull('user_id')
                         ->where('annee', $annee)
                         ->avg('poids');
 
-            if ($poids !== null) {
-                $noteTotale += ($scoreBrut * ($poids / 100));
-            }
+            // Si aucun poids, on saute ce KPI
+            if ($poids === null) continue;
+
+            // Contribution pondérée de ce KPI à la note finale
+            $noteKpi = ($scoreObtenu / $scoreMax) * ($poids / 100);
+            $noteFinale += $noteKpi;
         }
 
-        // ✅ Calcul du score total maximum possible
-        $noteMax = \App\Models\Question::with('options')
-            ->get()
-            ->sum(fn($q) => $q->options->max('score'));
-
-        return $noteMax > 0 ? round(($noteTotale / $noteMax) * 100, 2) : 0;
-    }
-
-    public function calculerNoteMention(Mention $mention): array
-    {
-        $etudiants = $mention->users;
-        $notes = [];
-
-        foreach ($etudiants as $etudiant) {
-            if ($etudiant->evaluations()->exists()) {
-                $notes[] = $this->calculerNoteEtudiant($etudiant);
-            }
-        }
-
-        $note = count($notes) > 0 ? round(array_sum($notes) / count($notes), 2) : null;
-
-        return [
-            'note' => $note,
-            'nbEvaluateurs' => count($notes),
-            'nbTotal' => $etudiants->count(),
-        ];
+        // Note finale sur 100
+        return round($noteFinale * 100, 2);
     }
 
 

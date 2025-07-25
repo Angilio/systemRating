@@ -2,7 +2,7 @@
     --black: #333333;
     --red: #C1272D;
     --shaded-red: #DF9595;
-    --green: #00751F;
+    --green: #299c48;
     --white: #FFFFFF;
     --twhite: #062252;
     box-sizing: border-box;
@@ -71,7 +71,7 @@ a{
 } */
 
 #login{
-    border: solid black 2px;
+    border: solid var(--green) 2px;
     border-radius: 10px;
     box-shadow: #b6b9bc;
     padding: 20px;

@@ -24,6 +24,7 @@
                                 <li><a class="dropdown-item" href="{{ route('etablissements.create') }}">Ajouter Établissement</a></li>
                                 <li><a class="dropdown-item" href="{{ route('mentions.create') }}">Ajouter Mention</a></li>
                                 <li><a class="dropdown-item" href="{{ route('register') }}">Ajouter un étudiant</a></li>
+                                <li><a class="dropdown-item" href="">Ajouter taux de réussite</a></li>
                             </ul>
                         </li>
                     @endif

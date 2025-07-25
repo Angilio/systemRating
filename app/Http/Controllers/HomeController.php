@@ -92,62 +92,78 @@ class HomeController extends Controller
     }
 
     public function classement()
-    {
-        $etablissements = Etablissement::with('mentions')->get();
+{
+    $etablissements = Etablissement::with(['mentions', 'users'])->get();
 
-        // Couleurs pour les graphiques
-        $colors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#20c997', '#ff6b6b', '#6c757d'];
+    // Couleurs pour les graphiques
+    $colors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#20c997', '#ff6b6b', '#6c757d'];
 
-        // Classement des établissements (y compris ceux sans note)
-        $classementEtablissements = $etablissements->sortByDesc(fn($e) => $e->note ?? 0)
-            ->values()
-            ->map(function ($e, $index) {
-                return [
-                    'id' => $e->id,
-                    'rang' => $index + 1,
-                    'etablissement' => $e->Libelee,
-                    'note' => $e->note,
-                ];
-            });
+    // 🔹 Nouveau : Total des utilisateurs (sans filtre profil)
+    $totalEtudiants = \App\Models\User::count();
 
-        // Classement des mentions par établissement
-        $classementParEtablissement = [];
+    // 🔹 Nouveau : Comptage par établissement (sans filtre profil)
+    $etudiantsParEtablissement = $etablissements->mapWithKeys(function ($etab) {
+        return [$etab->Libelee => $etab->users->count()];
+    });
 
-        foreach ($etablissements as $etab) {
-            $mentions = $etab->mentions()->orderByDesc('note')->get();
+    // 🔹 Classement des établissements
+    $classementEtablissements = $etablissements->sortByDesc(fn($e) => $e->note ?? 0)
+        ->values()
+        ->map(function ($e, $index) {
+            return [
+                'id' => $e->id,
+                'rang' => $index + 1,
+                'etablissement' => $e->Libelee,
+                'note' => $e->note,
+            ];
+        });
 
-            $mentionsTableau = [];
-            $labels = [];
-            $scores = [];
-            $afficherGraph = false;
+    // 🔹 Classement des mentions par établissement
+    $classementParEtablissement = [];
 
-            foreach ($mentions as $index => $mention) {
-                $labels[] = $mention->Libelee;
-                $hasNote = $mention->note !== null;
-                $score = $hasNote ? $mention->note : 1;
-                $scores[] = $score;
+    foreach ($etablissements as $etab) {
+        $mentions = $etab->mentions()->orderByDesc('note')->get();
 
-                if ($hasNote) {
-                    $afficherGraph = true;
-                }
+        $mentionsTableau = [];
+        $labels = [];
+        $scores = [];
+        $afficherGraph = false;
 
-                $mentionsTableau[] = [
-                    'rang' => $index + 1,
-                    'nom' => $mention->Libelee,
-                    'note' => $hasNote ? $mention->note : null,
-                ];
+        foreach ($mentions as $index => $mention) {
+            $labels[] = $mention->Libelee;
+            $hasNote = $mention->note !== null;
+            $score = $hasNote ? $mention->note : 1;
+            $scores[] = $score;
+
+            if ($hasNote) {
+                $afficherGraph = true;
             }
 
-            $classementParEtablissement[$etab->Libelee] = [
-                'graph' => $afficherGraph,
-                'labels' => $labels,
-                'scores' => $scores,
-                'tableau' => collect($mentionsTableau),
+            $mentionsTableau[] = [
+                'rang' => $index + 1,
+                'nom' => $mention->Libelee,
+                'note' => $hasNote ? $mention->note : null,
             ];
         }
 
-        return view('classement', compact('classementEtablissements', 'classementParEtablissement', 'colors'));
+        $classementParEtablissement[$etab->Libelee] = [
+            'graph' => $afficherGraph,
+            'labels' => $labels,
+            'scores' => $scores,
+            'tableau' => collect($mentionsTableau),
+        ];
     }
+
+    // 🔹 Envoi à la vue
+    return view('classement', compact(
+        'totalEtudiants',
+        'etudiantsParEtablissement',
+        'classementEtablissements',
+        'classementParEtablissement',
+        'colors'
+    ));
+}
+
 
 
 }

@@ -2,6 +2,9 @@
 
 @section('content')
 <div class="container">
+    {{-- Statistiques étudiants --}}
+
+    {{-- Classement établissements --}}
     <h1 class="text-center text-primary border border-2 rounded p-2">Classement des établissements</h1>
 
     {{-- Établissements --}}
@@ -71,7 +74,7 @@
                 </div>
             </div>
 
-            {{-- Doughnut Chart avec une seule légende --}}
+            {{-- Doughnut Chart --}}
             <div class="col-md-4 d-flex flex-column justify-content-center align-items-center">
                 <div class="chart-container-doughnut">
                     <canvas id="doughnut-{{ Str::slug($etabName) }}"></canvas>
@@ -79,7 +82,7 @@
             </div>
         </div>
 
-        {{-- Légende en dessous du graphique --}}
+        {{-- Légende --}}
         <div class="mt-3 d-flex flex-wrap justify-content-center">
             @foreach ($data['labels'] as $i => $label)
                 <div class="me-3 mb-2 d-flex align-items-center">
@@ -92,7 +95,35 @@
             <div class="alert alert-warning mt-3">Certaines mentions n'ont pas encore reçu de note. Graphique indisponible.</div>
         @endif
     @endforeach
+
+    <div class="my-2">
+        <h2 class="text-center text-dark">Statistiques des étudiants</h2>
+        <div class="row mt-3">
+            {{-- Total étudiants --}}
+            <div class="col-12 col-md-4 mb-3">
+                <div class="card border-primary h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-primary">Total des étudiants</h5>
+                        <p class="display-6">{{ $totalEtudiants }}</p>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Étudiants par établissement --}}
+            @foreach ($etudiantsParEtablissement as $etab => $nb)
+                <div class="col-12 col-md-4 mb-3">
+                    <div class="card border-success h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title text-success">{{ $etab }}</h5>
+                            <p class="display-6">{{ $nb }}</p>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
 </div>
+
 
 {{-- STYLES --}}
 <style>
@@ -114,7 +145,7 @@
     }
 </style>
 
-{{-- Chart.js --}}
+{{-- CHART.JS --}}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const colors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#20c997', '#ff6b6b', '#6c757d'];
