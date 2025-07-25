@@ -81,6 +81,8 @@ class EvaluationController extends Controller
         // ➤ Recalcul automatique après soumission
         $this->mettreAJourNoteEtClassement($user);
 
+        $this->recalculerToutesLesNotesEtudiants();
+
         return redirect()->route('dashboard')->with('success', 'Évaluation soumise avec succès.');
     }
 
@@ -120,25 +122,7 @@ class EvaluationController extends Controller
     //     return $noteMax > 0 ? round(($noteTotale / $noteMax) * 100, 2) : 0;
     // }
 
-    // public function calculerNoteMention(Mention $mention): array
-    // {
-    //     $etudiants = $mention->users;
-    //     $notes = [];
-
-    //     foreach ($etudiants as $etudiant) {
-    //         if ($etudiant->evaluations()->exists()) {
-    //             $notes[] = $this->calculerNoteEtudiant($etudiant);
-    //         }
-    //     }
-
-    //     $note = count($notes) > 0 ? round(array_sum($notes) / count($notes), 2) : null;
-
-    //     return [
-    //         'note' => $note,
-    //         'nbEvaluateurs' => count($notes),
-    //         'nbTotal' => $etudiants->count(),
-    //     ];
-    // }
+    
 
     public function calculerNoteEtudiant(User $etudiant): float
     {
@@ -181,7 +165,7 @@ class EvaluationController extends Controller
         return round($noteFinale * 100, 2);
     }
 
-
+    
 
     public function calculerNoteEtablissement($etablissement): ?float
     {
@@ -231,6 +215,23 @@ class EvaluationController extends Controller
             $e->update(['rang' => $index + 1]);
         });
     }
+
+    public function recalculerToutesLesNotesEtudiants()
+    {
+        $annee = now()->year;
+
+        // Récupérer tous les étudiants qui ont évalué cette année
+        $etudiants = User::whereHas('evaluations', function ($q) use ($annee) {
+            $q->where('annee', $annee);
+        })->get();
+
+        foreach ($etudiants as $etudiant) {
+            $note = $this->calculerNoteEtudiant($etudiant);
+            $etudiant->note = $note;
+            $etudiant->save();
+        }
+    }
+
 
 
 }

@@ -92,77 +92,77 @@ class HomeController extends Controller
     }
 
     public function classement()
-{
-    $etablissements = Etablissement::with(['mentions', 'users'])->get();
+    {
+        $etablissements = Etablissement::with(['mentions', 'users'])->get();
 
-    // Couleurs pour les graphiques
-    $colors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#20c997', '#ff6b6b', '#6c757d'];
+        // Couleurs pour les graphiques
+        $colors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#20c997', '#ff6b6b', '#6c757d'];
 
-    // 🔹 Nouveau : Total des utilisateurs (sans filtre profil)
-    $totalEtudiants = \App\Models\User::count();
+        // 🔹 Nouveau : Total des utilisateurs (sans filtre profil)
+        $totalEtudiants = \App\Models\User::count();
 
-    // 🔹 Nouveau : Comptage par établissement (sans filtre profil)
-    $etudiantsParEtablissement = $etablissements->mapWithKeys(function ($etab) {
-        return [$etab->Libelee => $etab->users->count()];
-    });
-
-    // 🔹 Classement des établissements
-    $classementEtablissements = $etablissements->sortByDesc(fn($e) => $e->note ?? 0)
-        ->values()
-        ->map(function ($e, $index) {
-            return [
-                'id' => $e->id,
-                'rang' => $index + 1,
-                'etablissement' => $e->Libelee,
-                'note' => $e->note,
-            ];
+        // 🔹 Nouveau : Comptage par établissement (sans filtre profil)
+        $etudiantsParEtablissement = $etablissements->mapWithKeys(function ($etab) {
+            return [$etab->Libelee => $etab->users->count()];
         });
 
-    // 🔹 Classement des mentions par établissement
-    $classementParEtablissement = [];
+        // 🔹 Classement des établissements
+        $classementEtablissements = $etablissements->sortByDesc(fn($e) => $e->note ?? 0)
+            ->values()
+            ->map(function ($e, $index) {
+                return [
+                    'id' => $e->id,
+                    'rang' => $index + 1,
+                    'etablissement' => $e->Libelee,
+                    'note' => $e->note,
+                ];
+            });
 
-    foreach ($etablissements as $etab) {
-        $mentions = $etab->mentions()->orderByDesc('note')->get();
+        // 🔹 Classement des mentions par établissement
+        $classementParEtablissement = [];
 
-        $mentionsTableau = [];
-        $labels = [];
-        $scores = [];
-        $afficherGraph = false;
+        foreach ($etablissements as $etab) {
+            $mentions = $etab->mentions()->orderByDesc('note')->get();
 
-        foreach ($mentions as $index => $mention) {
-            $labels[] = $mention->Libelee;
-            $hasNote = $mention->note !== null;
-            $score = $hasNote ? $mention->note : 1;
-            $scores[] = $score;
+            $mentionsTableau = [];
+            $labels = [];
+            $scores = [];
+            $afficherGraph = false;
 
-            if ($hasNote) {
-                $afficherGraph = true;
+            foreach ($mentions as $index => $mention) {
+                $labels[] = $mention->Libelee;
+                $hasNote = $mention->note !== null;
+                $score = $hasNote ? $mention->note : 1;
+                $scores[] = $score;
+
+                if ($hasNote) {
+                    $afficherGraph = true;
+                }
+
+                $mentionsTableau[] = [
+                    'rang' => $index + 1,
+                    'nom' => $mention->Libelee,
+                    'note' => $hasNote ? $mention->note : null,
+                ];
             }
 
-            $mentionsTableau[] = [
-                'rang' => $index + 1,
-                'nom' => $mention->Libelee,
-                'note' => $hasNote ? $mention->note : null,
+            $classementParEtablissement[$etab->Libelee] = [
+                'graph' => $afficherGraph,
+                'labels' => $labels,
+                'scores' => $scores,
+                'tableau' => collect($mentionsTableau),
             ];
         }
 
-        $classementParEtablissement[$etab->Libelee] = [
-            'graph' => $afficherGraph,
-            'labels' => $labels,
-            'scores' => $scores,
-            'tableau' => collect($mentionsTableau),
-        ];
+        // 🔹 Envoi à la vue
+        return view('classement', compact(
+            'totalEtudiants',
+            'etudiantsParEtablissement',
+            'classementEtablissements',
+            'classementParEtablissement',
+            'colors'
+        ));
     }
-
-    // 🔹 Envoi à la vue
-    return view('classement', compact(
-        'totalEtudiants',
-        'etudiantsParEtablissement',
-        'classementEtablissements',
-        'classementParEtablissement',
-        'colors'
-    ));
-}
 
 
 

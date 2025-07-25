@@ -5,7 +5,7 @@
 
     {{-- TITRE PRINCIPAL --}}
     <h1 class="text-primary text-center border border-2 rounded my-3">
-        Notes et Classements
+        Notes et classements
     </h1>
 
     {{-- BLOCS DE NOTES --}}

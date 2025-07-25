@@ -40,7 +40,9 @@
                 @endforeach
             @endforeach
 
-            <button class="btn btn-primary">Soumettre</button>
+            <div class="text-center">
+                <button class="btn btn-primary">Soumettre</button>
+            </div>
         </form>
     @endif
 </div>
