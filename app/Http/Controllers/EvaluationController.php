@@ -80,49 +80,11 @@ class EvaluationController extends Controller
 
         // ➤ Recalcul automatique après soumission
         $this->mettreAJourNoteEtClassement($user);
-
         $this->recalculerToutesLesNotesEtudiants();
 
         return redirect()->route('dashboard')->with('success', 'Évaluation soumise avec succès.');
     }
 
-
-    // public function calculerNoteEtudiant(User $etudiant): float
-    // {
-    //     $annee = now()->year;
-
-    //     $evaluations = Evaluation::with('question.kpi')
-    //         ->where('user_id', $etudiant->id)
-    //         ->where('annee', $annee)
-    //         ->get();
-
-    //     // Groupe par KPI
-    //     $groupes = $evaluations->groupBy(fn($eval) => $eval->question->kpi_id);
-    //     $noteTotale = 0;
-
-    //     foreach ($groupes as $kpiId => $group) {
-    //         $scoreBrut = $group->sum('score');
-
-    //         // Poids moyen dynamique du KPI
-    //         $poids = KpiClassement::where('kpi_id', $kpiId)
-    //                     ->whereNotNull('user_id')
-    //                     ->where('annee', $annee)
-    //                     ->avg('poids');
-
-    //         if ($poids !== null) {
-    //             $noteTotale += ($scoreBrut * ($poids / 100));
-    //         }
-    //     }
-
-    //     // ✅ Calcul du score total maximum possible
-    //     $noteMax = \App\Models\Question::with('options')
-    //         ->get()
-    //         ->sum(fn($q) => $q->options->max('score'));
-
-    //     return $noteMax > 0 ? round(($noteTotale / $noteMax) * 100, 2) : 0;
-    // }
-
-    
 
     public function calculerNoteEtudiant(User $etudiant): float
     {
@@ -165,7 +127,25 @@ class EvaluationController extends Controller
         return round($noteFinale * 100, 2);
     }
 
-    
+    public function calculerNoteMention(Mention $mention): array
+    {
+        $etudiants = $mention->users;
+        $notes = [];
+
+        foreach ($etudiants as $etudiant) {
+            if ($etudiant->evaluations()->exists()) {
+                $notes[] = $this->calculerNoteEtudiant($etudiant);
+            }
+        }
+
+        $note = count($notes) > 0 ? round(array_sum($notes) / count($notes), 2) : null;
+
+        return [
+            'note' => $note,
+            'nbEvaluateurs' => count($notes),
+            'nbTotal' => $etudiants->count(),
+        ];
+    }
 
     public function calculerNoteEtablissement($etablissement): ?float
     {
