@@ -14,34 +14,44 @@
                 <div class="card-body">
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
+
+                        {{-- EMAIL --}}
                         <div class="mb-3">
                             <label for="email" class="form-label text-md-end">{{ __('Email Address') }}</label>
-                            <div class="w-100">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}"  autocomplete="email" autofocus>
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
+                            <input id="email" type="email"
+                                   class="form-control @error('email') is-invalid @enderror"
+                                   name="email" value="{{ old('email') }}" autocomplete="email" autofocus>
+                            @error('email')
+                                <span class="invalid-feedback d-block" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
                         </div>
 
+                        {{-- PASSWORD --}}
                         <div class="mb-3">
                             <label for="password" class="form-label text-md-end">{{ __('Password') }}</label>
-                            <div class="w-100">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password"  autocomplete="current-password">
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                            <div class="input-group">
+                                <input id="password" type="password"
+                                       class="form-control @error('password') is-invalid @enderror"
+                                       name="password" autocomplete="current-password">
+                                <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                                    <i class="bi bi-eye-slash" id="toggleIcon"></i>
+                                </button>
                             </div>
+                            @error('password')
+                                <span class="invalid-feedback d-block" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
                         </div>
 
+                        {{-- REMEMBER + FORGOT --}}
                         <div class="mb-3">
                             <div class="d-flex justify-content-between">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+                                    <input class="form-check-input" type="checkbox" name="remember"
+                                           id="remember" {{ old('remember') ? 'checked' : '' }}>
                                     <label class="form-check-label" for="remember">
                                         {{ __('Remember Me') }}
                                     </label>
@@ -54,12 +64,11 @@
                             </div>
                         </div>
 
-                        <div class="row mb-0">
-                            <div class="">
-                                <button type="submit" class="btn btn-primary w-100">
-                                    {{ __('Login') }}
-                                </button>
-                            </div>
+                        {{-- SUBMIT --}}
+                        <div class="mb-0">
+                            <button type="submit" class="btn btn-primary w-100">
+                                {{ __('Login') }}
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -67,4 +76,20 @@
         </div>
     </div>
 </div>
+
+{{-- SCRIPT --}}
+@push('scripts')
+<script>
+    document.getElementById('togglePassword').addEventListener('click', function () {
+        const passwordInput = document.getElementById('password');
+        const icon = document.getElementById('toggleIcon');
+
+        const isPassword = passwordInput.type === 'password';
+        passwordInput.type = isPassword ? 'text' : 'password';
+
+        icon.classList.toggle('bi-eye');
+        icon.classList.toggle('bi-eye-slash');
+    });
+</script>
+@endpush
 @endsection
