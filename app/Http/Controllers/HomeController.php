@@ -55,8 +55,16 @@ class HomeController extends Controller
             : 0;
 
         // 5. Infos établissement
+        // $etablissement = $mention?->etablissement;
+        // $noteEtablissement = $etablissement?->note;
+
+        // 5. Infos sur l’établissement
         $etablissement = $mention?->etablissement;
-        $noteEtablissement = $etablissement?->note;
+        $noteEtablissement = $etablissement?->note ?? null;
+        $nbEtudiantsEtablissement = $etablissement?->users()->count() ?? 0;
+        $nbEvaluateursEtablissement = $etablissement
+            ? $etablissement->users()->whereHas('evaluations', fn($q) => $q->where('annee', $annee))->count()
+            : 0;
 
         $classementMentions = $etablissement?->mentions()
             ->orderByDesc('note')
@@ -77,12 +85,15 @@ class HomeController extends Controller
             'moyennes',
             'noteEtudiant',
             'noteMention',
-            'noteEtablissement',
-            'nbEvaluateursMention',
             'nbEtudiantsMention',
-            'classementMentions',
+            'nbEvaluateursMention',
+            'noteEtablissement',
+            'nbEtudiantsEtablissement',
+            'nbEvaluateursEtablissement',
+             'classementMentions',
             'classementEtablissements'
         ));
+        
     }
 
     public function welcome()

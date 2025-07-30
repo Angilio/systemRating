@@ -37,14 +37,17 @@
             </div>
         </div>
 
-        {{-- Note établissement --}}
+        {{-- Note de l’établissement --}}
         <div class="col-12 col-lg-4">
-            @if($noteEtablissement !== null)
-                <div class="alert alert-dark h-100">
+            <div class="alert {{ $noteEtablissement !== null ? 'alert-info' : 'alert-danger' }} h-100">
+                @if($noteEtablissement !== null)
                     <strong>Note de votre établissement :</strong>
-                    <span class="badge bg-dark">{{ $noteEtablissement }}/100</span>
-                </div>
-            @endif
+                    <span class="badge bg-primary">{{ $noteEtablissement }}/100</span> —
+                    {{ $nbEvaluateursEtablissement }} sur {{ $nbEtudiantsEtablissement }} étudiants ont évalué.
+                @else
+                    Vous n'êtes pas encore associé à un établissement ou aucune évaluation n’a été faite.
+                @endif
+            </div>
         </div>
     </div>
 
