@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Classement')
 @section('content')
 <div class="container">
     {{-- Statistiques étudiants --}}

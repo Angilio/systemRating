@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Avis et témoignage')
 @section('content')
 <div class="container-fluid">
     <h1 class="text-center text-primary mb-4">Témoignages & Avis</h1>
