@@ -22,7 +22,7 @@
 
     </head>
     <body>
-        <div class="bg-light">
+        <div id="top" class="bg-light">
             <div id="head" class="d-flex justify-content-start align-items-center flex-column flex-lg-row text-center text-lg-start gap-4 py-2 ps-2">
                 <img src="{{ asset('/assets/images/Una logo.jpg') }}" alt="Logo UNA" class="img-fluid" style="max-width: 100px;">
 
@@ -54,10 +54,17 @@
                     </div>
                     <div>
                         <h2>Liens Rapides</h2>
-                        <p>Accueil</p>
-                        <p>À propos</p>
-                        <p>Etablissement</p>
-                        <p>Système de Notation</p>
+                        <p><a href="#top" class="text-decoration-none">Retour en haut</a></p>
+                        <p>
+                            <a class="text-decoration-none" href="{{ route('classement.public') }}">
+                                {{ __('Classement') }}
+                            </a>
+                        </p>
+                        <p>
+                            <a class="text-decoration-none" href="{{ route('temoignages.index') }}">
+                                {{ __('Avis et témoignage') }}
+                            </a>
+                        </p>
                     </div>
                     <div>
                         <h2>Légal</h2>

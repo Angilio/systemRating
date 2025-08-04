@@ -21,7 +21,7 @@
                                 Admin
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="adminDropdown">
-                                <li><a class="dropdown-item" href="{{ route('etablissements.create') }}"><i class="bi bi-plus fw-bold fs-4 me-1 text-success"></i> Ajouter Établissement</a></li>
+                                <li class="d-flex align-items-center"><a class="dropdown-item" href="{{ route('etablissements.create') }}"><i class="bi bi-plus fw-bold fs-4 me-1 text-success"></i> Ajouter Établissement</a></li>
                                 <li><a class="dropdown-item" href="{{ route('mentions.create') }}"><i class="bi bi-plus fw-bold fs-4 me-1 text-success"></i> Ajouter Mention</a></li>
                                 <li><a class="dropdown-item" href="{{ route('register') }}"><i class="bi bi-plus fw-bold fs-4 me-1 text-success"></i> Ajouter un étudiant</a></li>
                                 <li><a class="dropdown-item" href=""><i class="bi bi-plus fw-bold fs-4 me-1 text-success"></i> Ajouter taux de réussite</a></li>
