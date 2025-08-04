@@ -132,7 +132,7 @@
         <h4 class="text-center text-primary border border-2 rounded p-2">Statistiques des étudiants</h4>
         <div class="row mt-3">
             {{-- Total étudiants --}}
-            <div class="col-12 col-md-4 mb-3">
+            <div class="col-12 col-sm-6 col-md-4 mb-3">
                 <div class="card border-primary h-100">
                     <div class="card-body text-center">
                         <h5 class="card-title text-primary">Total des étudiants</h5>
@@ -143,7 +143,7 @@
 
             {{-- Étudiants par établissement --}}
             @foreach ($etudiantsParEtablissement as $etab => $nb)
-                <div class="col-12 col-md-4 mb-3">
+                <div class="col-12 col-sm-6 col-md-4 mb-3">
                     <div class="card border-success h-100">
                         <div class="card-body text-center">
                             <h5 class="card-title text-success">{{ $etab }}</h5>

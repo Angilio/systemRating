@@ -1,0 +1,72 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Mention;
+use App\Models\TauxReussite;
+use App\Models\KpiClassement;
+use App\Models\Etablissement;
+use Illuminate\Http\Request;
+
+class TauxReussiteController extends Controller
+{
+    public function create()
+    {
+        $mentions = Mention::all();
+        return view('taux.create', compact('mentions'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'mention_id' => 'required|exists:mentions,id',
+            'taux' => 'required|numeric|min:0|max:100',
+        ]);
+
+        $annee = now()->year;
+
+        $taux = TauxReussite::updateOrCreate(
+            ['mention_id' => $request->mention_id, 'annee' => $annee],
+            ['taux' => $request->taux]
+        );
+
+        // ➤ Recalculer la note de la mention
+        $mention = $taux->mention;
+        $poidsKpi = KpiClassement::where('annee', $annee)
+            ->whereHas('kpi', fn($q) => $q->where('nom', 'like', '%taux de réussite%'))
+            ->avg('poids');
+
+        $poidsKpi = $poidsKpi ?? 0; // si aucun poids trouvé
+        $noteTaux = ($request->taux / 100) * ($poidsKpi / 100) * 100;
+
+        // ➤ Note moyenne des évaluateurs
+        $notes = $mention->users->map(fn($e) => $e->note)->filter();
+        $noteMoyenne = $notes->count() > 0 ? $notes->avg() : 0;
+
+        // ➤ Nouvelle note de la mention
+        $mention->note = round($noteTaux + $noteMoyenne, 2);
+        $mention->save();
+
+        // ➤ Recalculer seulement l'établissement concerné
+        $this->recalculerNoteEtablissement($mention->etablissement);
+
+        return redirect()->route('dashboard')->with('success', 'Taux de réussite ajouté et note de la mention + établissement mise à jour.');
+    }
+
+    private function recalculerNoteEtablissement(Etablissement $etablissement): void
+    {
+        $notes = [];
+
+        foreach ($etablissement->mentions as $mention) {
+            if ($mention->note !== null) {
+                $notes[] = $mention->note;
+            }
+        }
+
+        $etablissement->note = count($notes) > 0
+            ? round(array_sum($notes) / count($notes), 2)
+            : null;
+
+        $etablissement->save();
+    }
+}

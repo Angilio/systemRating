@@ -5,6 +5,7 @@ use App\Http\Controllers\EtablissementController;
 use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MentionController;
+use App\Http\Controllers\TauxReussiteController;
 use App\Http\Controllers\TemoignageController;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -82,4 +83,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/etudiant/espace', [App\Http\Controllers\EtudiantController::class, 'espace'])->name('etudiant.espace');
     Route::post('/etudiant/photo', [App\Http\Controllers\EtudiantController::class, 'uploadPhoto'])->name('etudiant.photo');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/taux-reussite/create', [TauxReussiteController::class, 'create'])->name('taux.create');
+    Route::post('/taux-reussite', [TauxReussiteController::class, 'store'])->name('taux.store');
 });

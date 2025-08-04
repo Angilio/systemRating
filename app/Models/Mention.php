@@ -26,4 +26,9 @@ class Mention extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function tauxReussites()
+    {
+        return $this->hasMany(TauxReussite::class);
+    }
 }
