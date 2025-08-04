@@ -70,23 +70,25 @@
         <h4 class="text-center">Votre classement des KPI</h4>
         <div class="col-12 col-lg-6 d-flex flex-column">
             @if($classements->isEmpty())
-                <p>Vous n'avez pas encore classé vos KPI.</p>
-                <a href="{{ route('kpi.classement.create') }}" class="btn btn-primary">Faire le classement</a>
+                <div class="text-center">
+                    <p>Vous n'avez pas encore classé vos KPI.</p>
+                    <a href="{{ route('kpi.classement.create') }}" class="btn btn-primary">Faire le classement</a>
+                </div>
             @else
                 <div class="table-responsive flex-grow-1">
                     <table class="table table-bordered text-center mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>KPI</th>
                                 <th>Rang</th>
+                                <th>KPI</th>
                                 <th>Poids (%)</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($classements as $c)
                                 <tr>
-                                    <td>{{ $c->kpi->nom }}</td>
                                     <td>{{ $c->rang }}</td>
+                                    <td>{{ $c->kpi->nom }}</td>
                                     <td>{{ $c->poids }}</td>
                                 </tr>
                             @endforeach
