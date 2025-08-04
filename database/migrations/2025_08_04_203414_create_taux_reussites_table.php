@@ -13,10 +13,15 @@ return new class extends Migration
     {
         Schema::create('taux_reussites', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('mention_id')->constrained()->onDelete('cascade');
-            $table->year('annee');
-            $table->float('taux'); // en pourcentage, ex: 75.5
+            $table->unsignedBigInteger('mention_id');
+            $table->integer('annee');
+            $table->integer('taux');
             $table->timestamps();
+
+            $table->foreign('mention_id')
+                ->references('id')
+                ->on('mentions')
+                ->onDelete('cascade');
         });
     }
 
