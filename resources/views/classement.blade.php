@@ -5,7 +5,7 @@
     {{-- Statistiques étudiants --}}
 
     {{-- Classement établissements --}}
-    <h1 class="text-center text-primary border border-2 rounded p-2">Classement des établissements</h1>
+    <h4 class="text-center text-primary border border-2 rounded p-2">Classement des établissements</h4>
 
     {{-- Établissements --}}
     <div class="table-responsive mt-4">
@@ -35,12 +35,44 @@
         </table>
     </div>
 
+
+    <h4 class="mt-3 text-center text-primary border border-2 rounded p-2">Notes moyennes des établissement par KPI</h4>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped text-center">
+        <thead class="table-success">
+            <tr>
+                <th>KPI</th>
+                @foreach(array_keys($tableauCroise[0] ?? []) as $key)
+                    @if($key !== 'kpi')
+                        <th>{{ $key }}</th>
+                    @endif
+                @endforeach
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($tableauCroise as $ligne)
+                <tr>
+                    <td class="text-start"><strong>{{ $ligne['kpi'] }}</strong></td>
+                    @foreach($ligne as $key => $val)
+                        @if($key !== 'kpi')
+                            <td>
+                                {{ $val !== null ? $val . '/100' : '-' }}
+                            </td>
+                        @endif
+                    @endforeach
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+
+
     {{-- Mentions par établissement --}}
-    <hr class="my-5">
-    <h1 class="text-center text-primary border border-2 rounded p-2">Classement des mentions par établissement</h1>
+    <h4 class=" mt-3 text-center text-primary border border-2 rounded p-2">Classement des mentions par établissement</h4>
 
     @foreach ($classementParEtablissement as $etabName => $data)
-        <h3 class="text-success mt-5">{{ $etabName }}</h3>
+        <h3 class="text-success">{{ $etabName }}</h3>
 
         @if ($data['graph'])
         <div class="row align-items-stretch">
@@ -96,8 +128,8 @@
         @endif
     @endforeach
 
-    <div class="my-2">
-        <h2 class="text-center text-dark">Statistiques des étudiants</h2>
+    <div class="mt-3">
+        <h4 class="text-center text-primary border border-2 rounded p-2">Statistiques des étudiants</h4>
         <div class="row mt-3">
             {{-- Total étudiants --}}
             <div class="col-12 col-md-4 mb-3">
