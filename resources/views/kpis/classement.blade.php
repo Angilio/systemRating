@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container-fluid">
-    <h3 class="mb-4 text-center">Classement des Indicateurs de Performance (KPI)</h3>
+    <h3 class="mb-4 text-center">Classement des Indicateurs Clé de Performance (KPI)</h3>
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
@@ -28,7 +28,11 @@
         @endif
 
         <div id="login" class="container">
-            <p>Classez les KPI de 1 (le plus important) à 6 (le moins important). Chaque rang doit être unique.</p>
+            <p>Classez les indicateurs suivants selon l’importance que vous leur accordez pour évaluer la performance d’un établissement.</p>
+            <p>Attribuez à chaque indicateur un numéro allant de 1 à 6, où 1 correspond au plus important et 6 au moins important selon vous.</p>
+            <p>Chaque chiffre ne peut être utilisé qu’une seule fois. Vous ne devez donc pas attribuer le même rang à plusieurs indicateurs.</p>
+            <p>Par exemple, si vous donnez le rang 1 à un indicateur, aucun autre ne peut avoir ce même rang.</p>
+
             <form action="{{ route('kpi.classement.store') }}" method="POST">
                 @csrf
 
