@@ -19,6 +19,7 @@
         <link href="{{ asset('assets/bootstrap/bootstrap.min.css') }}" rel="stylesheet">
         <script src="{{ asset('assets/bootstrap/bootstrap.bundle.min.js') }}"></script>
         <link rel="stylesheet" href="{{ asset('assets/bootstrap-icons/bootstrap-icons.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-yUK+4Dq6wklc6Pz7zJLyPBmpGmArZ5LbN+ekxK3tX5N5vGVzjz3D7KxQ9ONnCmFv5gygPfG74UgWJKnn5yUpxA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     </head>
     <body>

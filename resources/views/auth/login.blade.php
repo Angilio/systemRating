@@ -10,14 +10,14 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
+                <div class="card-header text-center h3 text-center text-info">Connecter-vous</div>
                 <div class="card-body">
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 
                         {{-- EMAIL --}}
                         <div class="mb-3">
-                            <label for="email" class="form-label text-md-end">{{ __('Email Address') }}</label>
+                            <label for="email" class="form-label text-md-end">Adresse e-mail</label>
                             <input id="email" type="email"
                                    class="form-control @error('email') is-invalid @enderror"
                                    name="email" value="{{ old('email') }}" autocomplete="email" autofocus>
@@ -30,7 +30,7 @@
 
                         {{-- PASSWORD --}}
                         <div class="mb-3">
-                            <label for="password" class="form-label text-md-end">{{ __('Password') }}</label>
+                            <label for="password" class="form-label text-md-end">Mot de passe</label>
                             <div class="input-group">
                                 <input id="password" type="password"
                                        class="form-control @error('password') is-invalid @enderror"
@@ -53,12 +53,12 @@
                                     <input class="form-check-input" type="checkbox" name="remember"
                                            id="remember" {{ old('remember') ? 'checked' : '' }}>
                                     <label class="form-check-label" for="remember">
-                                        {{ __('Remember Me') }}
+                                        Se souvenir de moi
                                     </label>
                                 </div>
                                 @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
-                                        {{ __('Forgot Your Password?') }}
+                                    <a class="btn btn-link text-decoration-none" href="{{ route('password.request') }}">
+                                        Mot de passe oublié?
                                     </a>
                                 @endif
                             </div>
@@ -67,7 +67,7 @@
                         {{-- SUBMIT --}}
                         <div class="mb-0">
                             <button type="submit" class="btn btn-primary w-100">
-                                {{ __('Login') }}
+                                Connexion
                             </button>
                         </div>
                     </form>
@@ -78,7 +78,6 @@
 </div>
 
 {{-- SCRIPT --}}
-@push('scripts')
 <script>
     document.getElementById('togglePassword').addEventListener('click', function () {
         const passwordInput = document.getElementById('password');
@@ -91,5 +90,4 @@
         icon.classList.toggle('bi-eye-slash');
     });
 </script>
-@endpush
 @endsection

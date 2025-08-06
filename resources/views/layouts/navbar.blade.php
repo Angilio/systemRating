@@ -31,20 +31,20 @@
 
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
-                            {{ __('Tableau de bord') }}
+                            Tableau de bord
                         </a>
                     </li>
                 @endauth
 
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('classement.public') ? 'active' : '' }}" href="{{ route('classement.public') }}">
-                        {{ __('Classement') }}
+                       Classement
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('temoignages.index') ? 'active' : '' }}" href="{{ route('temoignages.index') }}">
-                        {{ __('Avis et témoignage') }}
+                        Avis et témoignage
                     </a>
                 </li>
             </ul>
@@ -54,7 +54,7 @@
                 @guest
                     @if (Route::has('login'))
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}" href="{{ route('login') }}">{{ __('Login') }}</a>
+                            <a class="{{ request()->routeIs('login') ? 'active' : '' }} btn btn-outline-warning" href="{{ route('login') }}">Connexion</a>
                         </li>
                     @endif
                 @else
@@ -71,12 +71,12 @@
                         </a>
 
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{{ route('etudiant.espace') }}"><i class="bi bi-person-circle me-2"></i> Espace Etudiant</a></li>
+                            <li><a class="dropdown-item" href="{{ route('etudiant.espace') }}"><i class="bi bi-person-circle me-2"></i> Information personnelle</a></li>
                             <li><a class="dropdown-item" href="{{ route('password.change') }}"><i class="bi bi-shield-lock me-2"></i>Changer mot de passe</a></li>
                             <li>
-                                <a class="dropdown-item" href="{{ route('logout') }}"
+                                <a class="dropdown-item text-danger" href="{{ route('logout') }}"
                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                    <i class="bi bi-box-arrow-right me-2"></i> {{ __('Déconnexion') }}
+                                    <i class="bi bi-box-arrow-right me-2 text-danger"></i> Déconnexion
                                 </a>
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                     @csrf
