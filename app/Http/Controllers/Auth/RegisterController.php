@@ -50,7 +50,7 @@ class RegisterController extends Controller
             'niveau' => $request->niveau,
         ]);
         // Assigner le role Etudiant
-        $user->assignRole('Admin');
+        $user->assignRole('Etudiant');
 
         // Attacher le mot de passe temporairement pour l’email
         $user->plain_password = $plainPassword;
