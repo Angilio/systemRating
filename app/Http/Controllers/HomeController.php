@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\EvaluationController;
 use App\Models\Evaluation;
 use App\Models\Kpi;
+use App\Models\TauxReussite;
 
 class HomeController extends Controller
 {
@@ -56,11 +57,7 @@ class HomeController extends Controller
             ? $mention->users()->whereHas('evaluations', fn($q) => $q->where('annee', $annee))->count()
             : 0;
 
-        // 5. Infos établissement
-        // $etablissement = $mention?->etablissement;
-        // $noteEtablissement = $etablissement?->note;
 
-        // 5. Infos sur l’établissement
         $etablissement = $mention?->etablissement;
         $noteEtablissement = $etablissement?->note ?? null;
         $nbEtudiantsEtablissement = $etablissement?->users()->count() ?? 0;
@@ -173,98 +170,104 @@ class HomeController extends Controller
         // // 🔹 Récupération des 6 KPI
         $kpis = Kpi::all();
 
-        // // 🔹 Initialisation du tableau croisé
-        // $tableauCroise = [];
+       
+        $scoreMaxParKpi = [
+            1 => 9,
+            2 => 2,
+            4 => 5,
+            5 => 4,
+            6 => 5,
+        ];
 
-        // foreach ($kpis as $kpi) {
-        //     $ligne = ['kpi' => $kpi->nom];
+        $tableauCroise = [];
 
-        //     // Récupérer les question_id associés à ce KPI
-        //     $questionIds = Question::where('kpi_id', $kpi->id)->pluck('id');
+        foreach ($kpis as $kpi) {
+            $ligne = ['kpi' => $kpi->nom];
+            $scoreMax = $scoreMaxParKpi[$kpi->id] ?? null;
 
-        //     foreach ($etablissementsListe as $etab) {
-        //         // Récupérer les utilisateurs de cet établissement qui ont évalué
-        //         $etudiantIds = $etab->users()->whereHas('evaluations', function ($q) use ($questionIds) {
-        //             $q->whereIn('question_id', $questionIds);
-        //         })->pluck('id');
+            if (!$scoreMax) {
+                // Sauter le KPI si pas de score max (ex: Taux de réussite)
+                foreach ($etablissementsListe as $etab) {
+                    $ligne[$etab->Libelee] = null;
+                }
+                $tableauCroise[] = $ligne;
+                continue;
+            }
 
-        //         // Récupérer les scores des évaluations liées à ce KPI et cet établissement
-        //         $moyenne = Evaluation::whereIn('question_id', $questionIds)
-        //             ->whereIn('user_id', $etudiantIds)
-        //             ->avg('score');
+            // Récupérer les question_id de ce KPI
+            $questionIds = Question::where('kpi_id', $kpi->id)->pluck('id');
 
-        //         // Arrondir ou null si pas de note
-        //         $ligne[$etab->Libelee] = $moyenne !== null ? round($moyenne, 2) : null;
-        //     }
+            foreach ($etablissementsListe as $etab) {
+                // Récupérer les étudiants de cet établissement
+                $etudiants = $etab->users;
 
-        //     $tableauCroise[] = $ligne;
-        // }
+                $notesEtudiants = [];
 
-        // Score max par KPI (selon tes indications)
-$scoreMaxParKpi = [
-    1 => 9,
-    2 => 2,
-    4 => 5,
-    5 => 4,
-    6 => 5,
-];
+                foreach ($etudiants as $etudiant) {
+                    // Scores de cet étudiant sur les questions de ce KPI
+                    $scores = Evaluation::where('user_id', $etudiant->id)
+                        ->whereIn('question_id', $questionIds)
+                        ->pluck('score');
 
-$tableauCroise = [];
+                    if ($scores->count()) {
+                        $total = $scores->sum();
+                        $noteEtudiant = ($total / $scoreMax) * 100;
+                        $notesEtudiants[] = $noteEtudiant;
+                    }
+                }
 
-foreach ($kpis as $kpi) {
-    $ligne = ['kpi' => $kpi->nom];
-    $scoreMax = $scoreMaxParKpi[$kpi->id] ?? null;
+                // Moyenne sur les étudiants ayant évalué
+                $moyenneKpi = count($notesEtudiants)
+                    ? round(array_sum($notesEtudiants) / count($notesEtudiants), 2)
+                    : null;
 
-    if (!$scoreMax) {
-        // Sauter le KPI si pas de score max (ex: Taux de réussite)
-        foreach ($etablissementsListe as $etab) {
-            $ligne[$etab->Libelee] = null;
+                $ligne[$etab->Libelee] = $moyenneKpi;
+            }
+
+            $tableauCroise[] = $ligne;
         }
-        $tableauCroise[] = $ligne;
-        continue;
-    }
 
-    // Récupérer les question_id de ce KPI
-    $questionIds = Question::where('kpi_id', $kpi->id)->pluck('id');
+        // 🔹 Étape 1 : Charger tous les taux avec mention + établissement
+        $tauxReussites = TauxReussite::with('mention.etablissement')->get();
 
-    foreach ($etablissementsListe as $etab) {
-        // Récupérer les étudiants de cet établissement
-        $etudiants = $etab->users;
+        // 🔹 Étape 2 : Grouper les taux par établissement
+        $tauxParEtablissement = [];
 
-        $notesEtudiants = [];
+        foreach ($tauxReussites as $taux) {
+            $etab = $taux->mention->etablissement;
+            if (!$etab) continue;
 
-        foreach ($etudiants as $etudiant) {
-            // Scores de cet étudiant sur les questions de ce KPI
-            $scores = Evaluation::where('user_id', $etudiant->id)
-                ->whereIn('question_id', $questionIds)
-                ->pluck('score');
+            $libelle = $etab->Libelee;
 
-            if ($scores->count()) {
-                $total = $scores->sum();
-                $noteEtudiant = ($total / $scoreMax) * 100;
-                $notesEtudiants[] = $noteEtudiant;
+            if (!isset($tauxParEtablissement[$libelle])) {
+                $tauxParEtablissement[$libelle] = [
+                    'sum' => 0,
+                    'count' => 0
+                ];
+            }
+
+            $tauxParEtablissement[$libelle]['sum'] += $taux->taux;
+            $tauxParEtablissement[$libelle]['count']++;
+        }
+
+        // 🔹 Étape 3 : Remplir la 3e ligne du tableau (index 2)
+        if (isset($tableauCroise[2]) && $tableauCroise[2]['kpi'] === 'Taux de réussite') {
+            foreach ($etablissementsListe as $etab) {
+                $libelle = $etab->Libelee;
+
+                if (isset($tauxParEtablissement[$libelle])) {
+                    $sum = $tauxParEtablissement[$libelle]['sum'];
+                    $count = $tauxParEtablissement[$libelle]['count'];
+
+                    $tableauCroise[2][$libelle] = $count > 0
+                        ? round($sum / $count, 2)
+                        : null;
+                } else {
+                    $tableauCroise[2][$libelle] = null;
+                }
             }
         }
 
-        // Moyenne sur les étudiants ayant évalué
-        $moyenneKpi = count($notesEtudiants)
-            ? round(array_sum($notesEtudiants) / count($notesEtudiants), 2)
-            : null;
-
-        $ligne[$etab->Libelee] = $moyenneKpi;
-    }
-
-    $tableauCroise[] = $ligne;
-}
-
-        // // 🔹 Envoi à la vue
-        // return view('classement', compact(
-        //     'totalEtudiants',
-        //     'etudiantsParEtablissement',
-        //     'classementEtablissements',
-        //     'classementParEtablissement',
-        //     'colors'
-        // ));
         return view('classement', compact(
             'totalEtudiants',
             'etudiantsParEtablissement',
@@ -274,7 +277,5 @@ foreach ($kpis as $kpi) {
             'tableauCroise',
         ));
     }
-
-
 
 }
