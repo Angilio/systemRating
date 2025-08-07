@@ -2,7 +2,10 @@
 
 @section('content')
 <div class="container">
-    <h3>Ajouter un taux de réussite</h3>
+    <div class="mb-2 d-flex flex-column flex-md-row justify-content-between align-items-center">
+        <h3 class="text-info">Ajouter un taux de réussite</h3>
+        <a href="{{ route('taux.index')}}" class="btn btn-success">Taux de réussite annuel</a>
+    </div>
 
     @if(session('error'))
         <div class="alert alert-danger alert-dismissible fade show" role="alert">

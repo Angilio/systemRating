@@ -88,4 +88,5 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/taux-reussite/create', [TauxReussiteController::class, 'create'])->name('taux.create');
     Route::post('/taux-reussite', [TauxReussiteController::class, 'store'])->name('taux.store');
+    Route::get('/taux-reussite-annuel', [TauxReussiteController::class, 'index'])->name('taux.index');
 });

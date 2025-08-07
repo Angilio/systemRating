@@ -71,7 +71,7 @@
                         </a>
 
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{{ route('etudiant.espace') }}"><i class="bi bi-person-circle me-2"></i> Information personnelle</a></li>
+                            <li><a class="dropdown-item" href="{{ route('etudiant.espace') }}"><i class="bi bi-person-circle me-2"></i> Informations personnelles</a></li>
                             <li><a class="dropdown-item" href="{{ route('password.change') }}"><i class="bi bi-shield-lock me-2"></i>Changer mot de passe</a></li>
                             <li>
                                 <a class="dropdown-item text-danger" href="{{ route('logout') }}"

@@ -58,6 +58,7 @@ class LoginController extends Controller
         $validator = Validator::make($request->all(), [
             'current_password' => 'required',
             'new_password' => 'required|string|min:8|confirmed',
+            'new_password_confirmation' => 'required|string|min:8|confirmed',
         ]);
 
         if ($validator->fails()) {
