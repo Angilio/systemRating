@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-<p align="center">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Logo_Univ_Antsiranana.png/600px-Logo_Univ_Antsiranana.png" width="200" alt="Université d'Antsiranana Logo">
-</p>
-
 <h1 align="center">Système de Notation des Établissements — Université d'Antsiranana</h1>
 
 <p align="center">
